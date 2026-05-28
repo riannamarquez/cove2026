@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/ngrok": "^4.1.0",
     "@expo/ui": "~56.0.14",
+    "@react-native-community/slider": "5.2.0",
     "expo": "~56.0.5",
     "expo-constants": "~56.0.16",
     "expo-device": "~56.0.4",

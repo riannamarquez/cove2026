@@ -2,12 +2,12 @@ import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const TOTAL_STEPS = 6;
@@ -202,7 +202,7 @@ export default function IntakeScreen() {
                   key={area.id}
                   style={[
                     styles.bodyDot,
-                    { top: `${area.top}%`, left: area.left },
+                    { top: `${area.top}%` as `${number}%`, left: area.left as `${number}%` },
                     form.bodyArea === area.id && styles.bodyDotSelected,
                   ]}
                   onPress={() => setForm({ ...form, bodyArea: area.id })}

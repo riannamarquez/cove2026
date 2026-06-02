@@ -12,25 +12,50 @@ import {
 
 const TOTAL_STEPS = 6;
 
-const FITNESS_LEVELS = ["Beginner", "Intermediate", "Advanced"];
+const FITNESS_LEVELS = [
+  {
+    id: "inactive",
+    label: "Inactive",
+    desc: "Little to no regular exercise",
+  },
+  {
+    id: "moderate",
+    label: "Moderately Active",
+    desc: "Light exercise 2–3 days/week",
+  },
+  {
+    id: "active",
+    label: "Highly Active",
+    desc: "Intense exercise 4+ days/week",
+  },
+];
 
 const RECOVERY_OPTIONS = [
-  { id: "injury", label: "Recovering from injury", emoji: "🤕" },
-  { id: "maintenance", label: "General maintenance", emoji: "💪" },
+  {
+    id: "injury",
+    label: "Active Injury",
+    desc: "Currently experiencing pain",
+    emoji: "🤕",
+  },
+  {
+    id: "recovery",
+    label: "Recovery",
+    desc: "Post-injury, building back up",
+    emoji: "💪",
+  },
 ];
 
 const BODY_AREAS = [
-  { id: "neck", label: "Neck", top: 8, left: "42%" },
-  { id: "shoulder_l", label: "L Shoulder", top: 18, left: "18%" },
-  { id: "shoulder_r", label: "R Shoulder", top: 18, left: "62%" },
-  { id: "upper_back", label: "Upper Back", top: 22, left: "42%" },
-  { id: "chest", label: "Chest", top: 26, left: "42%" },
-  { id: "lower_back", label: "Lower Back", top: 38, left: "42%" },
-  { id: "hip", label: "Hip", top: 46, left: "42%" },
-  { id: "knee_l", label: "L Knee", top: 62, left: "24%" },
-  { id: "knee_r", label: "R Knee", top: 62, left: "58%" },
-  { id: "ankle_l", label: "L Ankle", top: 80, left: "24%" },
-  { id: "ankle_r", label: "R Ankle", top: 80, left: "58%" },
+  { id: "neck", label: "Neck" },
+  { id: "shoulder", label: "Shoulder" },
+  { id: "upper_back", label: "Upper Back" },
+  { id: "lower_back", label: "Lower Back" },
+  { id: "chest", label: "Chest" },
+  { id: "hip", label: "Hip" },
+  { id: "knee", label: "Knee" },
+  { id: "ankle", label: "Ankle" },
+  { id: "elbow", label: "Elbow" },
+  { id: "wrist", label: "Wrist" },
 ];
 
 export default function IntakeScreen() {
@@ -48,8 +73,11 @@ export default function IntakeScreen() {
   const progress = step / TOTAL_STEPS;
 
   const next = () => {
-    if (step < TOTAL_STEPS) setStep(step + 1);
-    else router.push("/");
+    if (step < TOTAL_STEPS) {
+      setStep(step + 1);
+    } else {
+      router.push("/(tabs)/plan");
+    }
   };
 
   const back = () => {
@@ -67,7 +95,6 @@ export default function IntakeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         {step > 1 && (
           <TouchableOpacity onPress={back} style={styles.backBtn}>
@@ -79,7 +106,6 @@ export default function IntakeScreen() {
         </Text>
       </View>
 
-      {/* Progress bar */}
       <View style={styles.progressTrack}>
         <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
       </View>
@@ -87,8 +113,8 @@ export default function IntakeScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        {/* STEP 1 — Name */}
         {step === 1 && (
           <View style={styles.stepContainer}>
             <Text style={styles.question}>What's your name?</Text>
@@ -104,7 +130,6 @@ export default function IntakeScreen() {
           </View>
         )}
 
-        {/* STEP 2 — Age */}
         {step === 2 && (
           <View style={styles.stepContainer}>
             <Text style={styles.question}>How old are you?</Text>
@@ -121,41 +146,47 @@ export default function IntakeScreen() {
           </View>
         )}
 
-        {/* STEP 3 — Fitness level */}
         {step === 3 && (
           <View style={styles.stepContainer}>
             <Text style={styles.question}>What's your fitness level?</Text>
-            <Text style={styles.subtitle}>Be honest — no wrong answers</Text>
+            <Text style={styles.subtitle}>
+              This determines exercise intensity in your plan
+            </Text>
             <View style={styles.optionList}>
               {FITNESS_LEVELS.map((level) => (
                 <TouchableOpacity
-                  key={level}
+                  key={level.id}
                   style={[
                     styles.optionCard,
-                    form.fitnessLevel === level && styles.optionCardSelected,
+                    form.fitnessLevel === level.id && styles.optionCardSelected,
                   ]}
-                  onPress={() => setForm({ ...form, fitnessLevel: level })}
+                  onPress={() => setForm({ ...form, fitnessLevel: level.id })}
                 >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      form.fitnessLevel === level && styles.optionTextSelected,
-                    ]}
-                  >
-                    {level}
-                  </Text>
+                  <View style={styles.optionTextGroup}>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        form.fitnessLevel === level.id && styles.optionTextSelected,
+                      ]}
+                    >
+                      {level.label}
+                    </Text>
+                    <Text style={styles.optionDesc}>{level.desc}</Text>
+                  </View>
+                  {form.fitnessLevel === level.id && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
           </View>
         )}
 
-        {/* STEP 4 — Recovery or maintenance */}
         {step === 4 && (
           <View style={styles.stepContainer}>
-            <Text style={styles.question}>What brings you here?</Text>
+            <Text style={styles.question}>Recovery or injury?</Text>
             <Text style={styles.subtitle}>
-              This shapes the type of exercises we give you
+              This shapes the type of exercises in your plan
             </Text>
             <View style={styles.optionList}>
               {RECOVERY_OPTIONS.map((opt) => (
@@ -169,13 +200,44 @@ export default function IntakeScreen() {
                   onPress={() => setForm({ ...form, recoveryType: opt.id })}
                 >
                   <Text style={styles.optionEmoji}>{opt.emoji}</Text>
+                  <View style={styles.optionTextGroup}>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        form.recoveryType === opt.id && styles.optionTextSelected,
+                      ]}
+                    >
+                      {opt.label}
+                    </Text>
+                    <Text style={styles.optionDesc}>{opt.desc}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {step === 5 && (
+          <View style={styles.stepContainer}>
+            <Text style={styles.question}>Where are we working?</Text>
+            <Text style={styles.subtitle}>Select the area of focus</Text>
+            <View style={styles.bodyGrid}>
+              {BODY_AREAS.map((area) => (
+                <TouchableOpacity
+                  key={area.id}
+                  style={[
+                    styles.bodyChip,
+                    form.bodyArea === area.id && styles.bodyChipSelected,
+                  ]}
+                  onPress={() => setForm({ ...form, bodyArea: area.id })}
+                >
                   <Text
                     style={[
-                      styles.optionText,
-                      form.recoveryType === opt.id && styles.optionTextSelected,
+                      styles.bodyChipText,
+                      form.bodyArea === area.id && styles.bodyChipTextSelected,
                     ]}
                   >
-                    {opt.label}
+                    {area.label}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -183,41 +245,6 @@ export default function IntakeScreen() {
           </View>
         )}
 
-        {/* STEP 5 — Body map */}
-        {step === 5 && (
-          <View style={styles.stepContainer}>
-            <Text style={styles.question}>Where does it hurt?</Text>
-            <Text style={styles.subtitle}>Tap the area on your body</Text>
-            <View style={styles.bodyMap}>
-              <View style={styles.bodyFigure}>
-                <View style={styles.head} />
-                <View style={styles.torso} />
-                <View style={[styles.arm, styles.armLeft]} />
-                <View style={[styles.arm, styles.armRight]} />
-                <View style={[styles.leg, styles.legLeft]} />
-                <View style={[styles.leg, styles.legRight]} />
-              </View>
-              {BODY_AREAS.map((area) => (
-                <TouchableOpacity
-                  key={area.id}
-                  style={[
-                    styles.bodyDot,
-                    { top: `${area.top}%` as `${number}%`, left: area.left as `${number}%` },
-                    form.bodyArea === area.id && styles.bodyDotSelected,
-                  ]}
-                  onPress={() => setForm({ ...form, bodyArea: area.id })}
-                />
-              ))}
-            </View>
-            {form.bodyArea && (
-              <Text style={styles.selectedArea}>
-                Selected: {BODY_AREAS.find((a) => a.id === form.bodyArea)?.label}
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* STEP 6 — Pain level */}
         {step === 6 && (
           <View style={styles.stepContainer}>
             <Text style={styles.question}>How much pain are you in?</Text>
@@ -241,8 +268,8 @@ export default function IntakeScreen() {
             {form.painLevel >= 7 && (
               <View style={styles.warningBox}>
                 <Text style={styles.warningText}>
-                  ⚠️ High pain level detected. Please consult a medical
-                  professional before starting any exercise program.
+                  ⚠️ High pain level. Please consult a medical professional
+                  before starting any exercise program.
                 </Text>
               </View>
             )}
@@ -250,7 +277,6 @@ export default function IntakeScreen() {
         )}
       </ScrollView>
 
-      {/* Next button */}
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.nextBtn, !canProceed() && styles.nextBtnDisabled]}
@@ -258,7 +284,7 @@ export default function IntakeScreen() {
           disabled={!canProceed()}
         >
           <Text style={styles.nextBtnText}>
-            {step === TOTAL_STEPS ? "Generate My Plan →" : "Continue →"}
+            {step === TOTAL_STEPS ? "Build My Plan →" : "Continue →"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -287,9 +313,20 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   progressFill: { height: 3, backgroundColor: "#4F8EF7", borderRadius: 2 },
-  content: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 32, paddingBottom: 120 },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 120,
+  },
   stepContainer: { flex: 1 },
-  question: { fontSize: 28, fontWeight: "800", color: "#fff", marginBottom: 8, lineHeight: 36 },
+  question: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#fff",
+    marginBottom: 8,
+    lineHeight: 36,
+  },
   subtitle: { fontSize: 15, color: "#666", marginBottom: 36 },
   input: {
     backgroundColor: "#1a1a1a",
@@ -312,33 +349,44 @@ const styles = StyleSheet.create({
   },
   optionCardLarge: { padding: 22 },
   optionCardSelected: { borderColor: "#4F8EF7", backgroundColor: "#0d1f3c" },
+  optionTextGroup: { flex: 1 },
   optionText: { color: "#aaa", fontSize: 16, fontWeight: "600" },
   optionTextSelected: { color: "#4F8EF7" },
+  optionDesc: { color: "#555", fontSize: 13, marginTop: 2 },
   optionEmoji: { fontSize: 24, marginRight: 14 },
-  bodyMap: { height: 320, alignItems: "center", position: "relative", marginBottom: 16 },
-  bodyFigure: { width: 120, height: 300, position: "relative", alignItems: "center" },
-  head: { width: 44, height: 44, borderRadius: 22, backgroundColor: "#2a2a2a", marginBottom: 4 },
-  torso: { width: 70, height: 100, backgroundColor: "#2a2a2a", borderRadius: 10, marginBottom: 4 },
-  arm: { width: 22, height: 90, backgroundColor: "#2a2a2a", borderRadius: 11, position: "absolute", top: 48 },
-  armLeft: { left: 4 },
-  armRight: { right: 4 },
-  leg: { width: 28, height: 110, backgroundColor: "#2a2a2a", borderRadius: 14, position: "absolute", top: 152 },
-  legLeft: { left: 20 },
-  legRight: { right: 20 },
-  bodyDot: {
-    position: "absolute",
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: "#333",
-    borderWidth: 2,
-    borderColor: "#555",
+  checkmark: { color: "#4F8EF7", fontSize: 18, fontWeight: "700" },
+  bodyGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
-  bodyDotSelected: { backgroundColor: "#4F8EF7", borderColor: "#4F8EF7" },
-  selectedArea: { color: "#4F8EF7", fontSize: 15, fontWeight: "600", textAlign: "center", marginTop: 8 },
-  painNumber: { fontSize: 72, fontWeight: "800", color: "#fff", textAlign: "center", marginBottom: 16 },
+  bodyChip: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: "#2a2a2a",
+  },
+  bodyChipSelected: {
+    backgroundColor: "#0d1f3c",
+    borderColor: "#4F8EF7",
+  },
+  bodyChipText: { color: "#aaa", fontSize: 15, fontWeight: "600" },
+  bodyChipTextSelected: { color: "#4F8EF7" },
+  painNumber: {
+    fontSize: 72,
+    fontWeight: "800",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 16,
+  },
   slider: { width: "100%", height: 40 },
-  sliderLabels: { flexDirection: "row", justifyContent: "space-between", marginTop: 4 },
+  sliderLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 4,
+  },
   sliderLabel: { color: "#666", fontSize: 12 },
   warningBox: {
     backgroundColor: "#2a1500",
@@ -359,7 +407,12 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#1a1a1a",
   },
-  nextBtn: { backgroundColor: "#4F8EF7", paddingVertical: 18, borderRadius: 14, alignItems: "center" },
+  nextBtn: {
+    backgroundColor: "#4F8EF7",
+    paddingVertical: 18,
+    borderRadius: 14,
+    alignItems: "center",
+  },
   nextBtnDisabled: { backgroundColor: "#1a1a1a" },
   nextBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });

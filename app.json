@@ -43,4 +43,10 @@
       "reactCompiler": true
     }
   }
+
+
+,"extra": {
+  "supabaseUrl": "your_supabase_url",
+  "supabaseAnonKey": "your_anon_key"
+}
 }

@@ -10,13 +10,16 @@ import {
   View,
 } from "react-native";
 
-// TODO: replace stubs with Supabase auth calls
-async function signIn(_email: string, _password: string) {
-  throw new Error("Supabase auth not connected yet");
+import { supabase } from "../../.lib/supabase";
+
+async function signIn(email: string, password: string) {
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) throw error;
 }
 
-async function signUp(_email: string, _password: string) {
-  throw new Error("Supabase auth not connected yet");
+async function signUp(email: string, password: string) {
+  const { error } = await supabase.auth.signUp({email, password});
+  if (error) throw error;
 }
 
 export default function LoginScreen() {
@@ -53,7 +56,7 @@ export default function LoginScreen() {
     >
       <View style={styles.inner}>
         <View style={styles.top}>
-          <Text style={styles.logo}>ouch.</Text>
+          <Text style={styles.logo}>cove.</Text>
           <Text style={styles.tagline}>injury recovery, guided by AI</Text>
         </View>
 

@@ -1,6 +1,8 @@
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { supabase } from "../../.lib/supabase";
+
 import {
   ScrollView,
   StyleSheet,
@@ -72,12 +74,40 @@ export default function IntakeScreen() {
 
   const progress = step / TOTAL_STEPS;
 
-  const next = () => {
+  const next = async () => {
+    if (step === 3) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('users').upsert({
+          id: user.id,
+          email: user.email,
+          name: form.name,
+          age: parseInt(form.age),
+          fitness_level: form.fitnessLevel,
+        });
+      }
+    }
+
     if (step < TOTAL_STEPS) {
       setStep(step + 1);
     } else {
-      router.push("/(tabs)/plan");
-    }
+      // call cloud func & nav to plan
+      try {
+        const response = await fetch('http://localhost:8000', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            body_part: form.bodyArea,
+            pain_level: form.painLevel,
+            condition: form.recoveryType,
+            goals: form.fitnessLevel,
+          }),
+      });
+      const plan = await response.json();
+      router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } });
+    } catch (e) {
+      console.error('Failed to generate plan:', e);
+    } }
   };
 
   const back = () => {

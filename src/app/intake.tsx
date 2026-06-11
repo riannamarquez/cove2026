@@ -93,7 +93,7 @@ export default function IntakeScreen() {
     } else {
       // call cloud func & nav to plan
       try {
-        const response = await fetch('http://localhost:8000', {
+        const response = await fetch('https://us-central1-cove-app-499119.cloudfunctions.net/generate-plan', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

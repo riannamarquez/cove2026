@@ -10,7 +10,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY,
   {
     realtime: { enabled: false },
-    global: { fetch: fetch }
   }
 );
 

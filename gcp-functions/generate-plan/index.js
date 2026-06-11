@@ -5,9 +5,12 @@
  // loading in each of the packages we installed
     // dto env tells it to find the env folder and the secret keys in it
 
+const ws = require('ws');
+
 const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
+  { realtime: { transport: ws } }
 );
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})

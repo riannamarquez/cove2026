@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "functions-framework --target=generatePlan",
-  "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "functions-framework --target=generatePlan",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +15,7 @@
     "@google-cloud/functions-framework": "^5.0.2",
     "@supabase/supabase-js": "^2.107.0",
     "dotenv": "^17.4.2",
-    "openai": "^6.42.0"
-  },
-  "devDependencies": {}
+    "openai": "^6.42.0",
+    "ws": "^8.21.0"
+  }
 }

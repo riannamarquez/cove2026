@@ -6,8 +6,12 @@
     // dto env tells it to find the env folder and the secret keys in it
 
 const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY,
+  {
+    realtime: { enabled: false },
+    global: { fetch: fetch }
+  }
 );
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})

@@ -48,14 +48,13 @@ const RECOVERY_OPTIONS = [
 ];
 
 const BODY_AREAS = [
-  { id: "upper_legs", label: "Upper Legs" },
-  { id: "lower_legs", label: "Lower Legs" },
+  { id: "upper_legs", label: "Upper Legs (Knee, quad, hamstring, hip)" },
+  { id: "lower_legs", label: "Lower Legs (Ankle, calf, shin splints)" },
   { id: "back", label: "Back" },
   { id: "shoulders", label: "Shoulders" },
   { id: "neck", label: "Neck" },
   { id: "upper_arms", label: "Upper Arms (Bicep, tricep, elbow)" },
   { id: "lower_arms", label: "Lower Arms (Wrist, forearm, tennis elbow)" },
-  { id: "ankle", label: "Ankle" },
 ];
 
 export default function IntakeScreen() {

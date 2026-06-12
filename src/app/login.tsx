@@ -41,7 +41,7 @@ export default function LoginScreen() {
       } else {
         await signUp(email.trim(), password);
       }
-      router.replace("/intake");
+      router.replace("/(tabs)/home");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {

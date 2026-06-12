@@ -21,6 +21,14 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="home"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="pastPlans"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
         name="plan"
         options={{
           title: "Exercise Plan",

@@ -107,6 +107,19 @@ export default function IntakeScreen() {
           }),
       });
       const plan = await response.json();
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('plans').insert({
+          user_id: user.id,
+          exercises: form.bodyArea,
+          pain_level: form.painLevel,
+          recovery_stage: form.recoveryType,
+          fitness_level: form.fitnessLevel,
+          plan_data: plan,
+        });
+      }
+
       router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } });
     } catch (e) {
       console.error('Failed to generate plan:', e);

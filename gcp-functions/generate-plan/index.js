@@ -13,9 +13,6 @@ const supabase = createClient(
   { realtime: { transport: ws } }
 );
 
-if (error) throw error;
-console.log('Exercises from Supabase:', exercises.map(e => e.name + ' - ' + e.body_area));
-
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY})
 
 // function gcp will run when someone hits endpoint

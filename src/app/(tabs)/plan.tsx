@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -181,9 +182,14 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
 }
 
 export default function PlanScreen() {
+  const router = useRouter();
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push("/(tabs)/home")} style={styles.backHomeBtn}>
+          <Text style={styles.backHomeBtnText}>← Back to Home</Text>
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>My Exercise Plan</Text>
         <Text style={styles.headerSub}>Tap a card to see your reps</Text>
       </View>
@@ -218,6 +224,15 @@ const styles = StyleSheet.create({
   headerSub: {
     fontSize: 14,
     color: "#666",
+  },
+  backHomeBtn: {
+    alignSelf: "flex-start",
+    marginBottom: 16,
+  },
+  backHomeBtnText: {
+    color: "#4F8EF7",
+    fontSize: 14,
+    fontWeight: "600",
   },
   scroll: {
     paddingHorizontal: 20,

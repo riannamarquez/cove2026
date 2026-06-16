@@ -29,9 +29,19 @@ if (req.method === 'OPTIONS')
     }
 
 try {
-    const { body_part, pain_level, condition, goals } = req.body;
+    const { body_part, pain_level, condition, goals, user_id } = req.body;
     // pulls out the specific fields from wtv app sent
     // "pull these four fields out of req.body"
+
+    const { data: intake, error: intakeError } = await supabase
+        .from('users')
+        .select('age, fitness_level')
+        .eq('id', user_id)
+        .single();
+    if (intakeError) throw intakeError;
+
+    const age = intake?.age;
+    const fitnessLevel = intake?.fitness_level;
 
     //rag step-- fetching relevant exercises from your database
     const { data: exercises, error } = await supabase
@@ -39,7 +49,6 @@ try {
         .select('*') // grabs all the columns (think sql)
         .ilike('body_area', `%${body_part}%`) // case-insensitive search
         .limit(10); // caps at ten results so it doesn't overflow
-
     if (error) throw error;
 
     //const exerciseList = (exercises || []).map(e =>
@@ -48,7 +57,6 @@ try {
     // turning the array of exercise objects into a readable text list from suabase
     // quasiquotes let u embed variables directly with ${} 
 
-        // ask claire about sets and reps in the exercise table
     const exerciseList = exercises.map(e =>
   `- ${e.name}: ${e.instructions} (contraindications: ${e.contradictions})`
     ).join('\n');
@@ -57,13 +65,15 @@ try {
 You MUST select exercises ONLY from the list provided below. Do not invent or suggest any exercises that are not in the list.
 
 A patient has the following profile:
+- Age: ${age}
+- Fitness level: ${fitnessLevel}
 - Body part: ${body_part}
 - Pain level: ${pain_level}/10
 - Condition: ${condition}
 - Goals: ${goals}
 
 From the following exercises, select the best 3 for this patient and explain why each is appropriate.
-Return ONLY a JSON object with a field "exercises" containing an array of 3 objects, each with fields: name, instructions, and rationale.
+Return ONLY a JSON object with a field "exercises" containing an array of 3 objects, each with fields: name and rationale.
 
 Available exercises (choose ONLY from these):
 ${exerciseList}`;
@@ -75,11 +85,15 @@ ${exerciseList}`;
     });
 
     const result = JSON.parse(completion.choices[0].message.content);
-    // sends prompt to OpenAI and waits for the response 
-    // "JSON.parse" makes it so that GPT is forced to return a valid JSON
-        // parses response to an actual javascript object
 
-        return res.status(200).json(result);
+    // merge GPT's picks with the full Supabase rows so sets/reps/instructions
+    // always come from the database, not GPT
+    const enriched = result.exercises.map(gptEx => {
+        const dbEx = exercises.find(e => e.name === gptEx.name);
+        return { ...dbEx, rationale: gptEx.rationale };
+    });
+
+        return res.status(200).json({ exercises: enriched });
         // sends 3 exercies back to the app 
 
     // error handling

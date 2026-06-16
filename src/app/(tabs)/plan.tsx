@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -17,47 +17,13 @@ import {
 } from "react-native";
 
 type Exercise = {
-  id: string;
   name: string;
   sets: number;
   reps: number;
-  rest: string;
-  muscle: string;
+  body_area: string;
   instructions: string;
+  rationale: string;
 };
-
-const EXERCISES: Exercise[] = [
-  {
-    id: "1",
-    name: "Straight Leg Raises",
-    sets: 3,
-    reps: 15,
-    rest: "60 sec",
-    muscle: "Quadriceps",
-    instructions:
-      "Lie flat on your back. Keep one leg straight and raise it to ~45°. Hold 2 seconds, then lower slowly. Keep your core engaged throughout the movement.",
-  },
-  {
-    id: "2",
-    name: "Quad Sets",
-    sets: 3,
-    reps: 20,
-    rest: "30 sec",
-    muscle: "Quadriceps",
-    instructions:
-      "Sit or lie with your leg extended. Press the back of your knee into the floor by tightening your quad. Hold for 5 seconds, then release slowly. Avoid holding your breath.",
-  },
-  {
-    id: "3",
-    name: "Terminal Knee Extension",
-    sets: 3,
-    reps: 12,
-    rest: "45 sec",
-    muscle: "VMO / Quad",
-    instructions:
-      "Stand with a resistance band looped behind your knee. Fully straighten your leg by engaging the quad. Control the return movement. Do not hyperextend the knee.",
-  },
-];
 
 const CARD_HEIGHT = 240;
 
@@ -102,7 +68,7 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
             activeOpacity={0.9}
           >
             <View style={styles.muscleTag}>
-              <Text style={styles.muscleTagText}>{exercise.muscle}</Text>
+              <Text style={styles.muscleTagText}>{exercise.body_area}</Text>
             </View>
             <Text style={styles.exerciseName}>{exercise.name}</Text>
             <Text style={styles.flipHint}>Tap to see plan →</Text>
@@ -132,11 +98,6 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
               <View style={styles.repStat}>
                 <Text style={styles.repStatNum}>{exercise.reps}</Text>
                 <Text style={styles.repStatLabel}>reps</Text>
-              </View>
-              <View style={styles.repDivider} />
-              <View style={styles.repStat}>
-                <Text style={styles.repStatNum}>{exercise.rest}</Text>
-                <Text style={styles.repStatLabel}>rest</Text>
               </View>
             </View>
             <TouchableOpacity
@@ -168,6 +129,7 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
               <Text style={styles.modalGifText}>GIF coming soon</Text>
             </View>
             <Text style={styles.modalInstructions}>{exercise.instructions}</Text>
+            <Text style={styles.modalRationale}>Why this exercise: {exercise.rationale}</Text>
             <TouchableOpacity
               style={styles.modalCloseBtn}
               onPress={() => setShowInstructions(false)}
@@ -183,6 +145,8 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
 
 export default function PlanScreen() {
   const router = useRouter();
+  const { plan } = useLocalSearchParams<{ plan: string }>();
+  const exercises: Exercise[] = plan ? JSON.parse(plan).exercises : [];
 
   return (
     <View style={styles.screen}>
@@ -197,8 +161,8 @@ export default function PlanScreen() {
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
-        {EXERCISES.map((ex) => (
-          <FlipCard key={ex.id} exercise={ex} />
+        {exercises.map((ex, i) => (
+          <FlipCard key={i} exercise={ex} />
         ))}
       </ScrollView>
     </View>
@@ -391,6 +355,12 @@ const styles = StyleSheet.create({
     color: "#bbb",
     fontSize: 15,
     lineHeight: 24,
+  },
+  modalRationale: {
+    color: "#555",
+    fontSize: 13,
+    lineHeight: 20,
+    fontStyle: "italic",
   },
   modalCloseBtn: {
     backgroundColor: "#4F8EF7",

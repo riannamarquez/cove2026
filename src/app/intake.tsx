@@ -48,13 +48,16 @@ const RECOVERY_OPTIONS = [
 ];
 
 const BODY_AREAS = [
-  { id: "upper_legs", label: "Upper Legs (Knee, quad, hamstring, hip)" },
-  { id: "lower_legs", label: "Lower Legs (Ankle, calf, shin splints)" },
-  { id: "back", label: "Back" },
-  { id: "shoulders", label: "Shoulders" },
   { id: "neck", label: "Neck" },
-  { id: "upper_arms", label: "Upper Arms (Bicep, tricep, elbow)" },
-  { id: "lower_arms", label: "Lower Arms (Wrist, forearm, tennis elbow)" },
+  { id: "shoulder", label: "Shoulder" },
+  { id: "upper_back", label: "Upper Back" },
+  { id: "lower_back", label: "Lower Back" },
+  { id: "chest", label: "Chest" },
+  { id: "hip", label: "Hip" },
+  { id: "knee", label: "Knee" },
+  { id: "ankle", label: "Ankle" },
+  { id: "elbow", label: "Elbow" },
+  { id: "wrist", label: "Wrist" },
 ];
 
 export default function IntakeScreen() {
@@ -72,59 +75,48 @@ export default function IntakeScreen() {
   const progress = step / TOTAL_STEPS;
 
   const next = async () => {
-    if (step === 3) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('users').upsert({
-          id: user.id,
-          email: user.email,
-          name: form.name,
-          age: parseInt(form.age),
-          fitness_level: form.fitnessLevel,
-        });
-      }
+  if (step === 3) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('users').upsert({
+        id: user.id,
+        email: user.email,
+        name: form.name,
+        age: parseInt(form.age),
+        fitness_level: form.fitnessLevel,
+      });
     }
+  }
 
-    if (step < TOTAL_STEPS) {
-      setStep(step + 1);
-    } else {
-      // call cloud func & nav to plan
-      try {
-        console.log('sending to GCP:', {
+  if (step < TOTAL_STEPS) {
+    setStep(step + 1);
+  } else {
+    try {
+      console.log('sending to GCP:', {
+        body_part: form.bodyArea,
+        pain_level: form.painLevel,
+        condition: form.recoveryType,
+        goals: form.fitnessLevel,
+      });
+      const { data: { user } } = await supabase.auth.getUser();
+      const response = await fetch('https://us-central1-cove-app-499119.cloudfunctions.net/generate-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user?.id,
           body_part: form.bodyArea,
           pain_level: form.painLevel,
           condition: form.recoveryType,
           goals: form.fitnessLevel,
-        })
-        const response = await fetch('https://us-central1-cove-app-499119.cloudfunctions.net/generate-plan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            body_part: form.bodyArea,
-            pain_level: form.painLevel,
-            condition: form.recoveryType,
-            goals: form.fitnessLevel,
-          }),
+        }),
       });
       const plan = await response.json();
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('plans').insert({
-          user_id: user.id,
-          exercises: form.bodyArea,
-          pain_level: form.painLevel,
-          recovery_stage: form.recoveryType,
-          fitness_level: form.fitnessLevel,
-          plan_data: plan,
-        });
-      }
-
       router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } });
     } catch (e) {
       console.error('Failed to generate plan:', e);
-    } }
-  };
+    }
+  }
+};
 
   const back = () => {
     if (step > 1) setStep(step - 1);
@@ -275,7 +267,7 @@ export default function IntakeScreen() {
                     styles.bodyChip,
                     form.bodyArea === area.id && styles.bodyChipSelected,
                   ]}
-                  onPress={() => setForm({ ...form, bodyArea: area.label })}
+                  onPress={() => setForm({ ...form, bodyArea: area.id })}
                 >
                   <Text
                     style={[

@@ -1,7 +1,8 @@
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import { supabase } from "../../.lib/supabase";
+import { useState, useEffect } from "react";
+//useEffect needed to check Supabase for existing profile data 
 
 import {
   ScrollView,
@@ -72,19 +73,41 @@ export default function IntakeScreen() {
     painLevel: 5,
   });
 
+  const [profileLoaded, setProfileLoaded] = useState(false);
+useEffect(() => {
+  const checkProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from('users')
+        .select('name, age')
+        .eq('id', user.id)
+        .single();
+      
+      if (data?.name && data?.age) {
+        setForm(prev => ({ ...prev, name: data.name, age: String(data.age) }));
+        setStep(3); // skip name and age steps
+      }
+    }
+    setProfileLoaded(true);
+  };
+  checkProfile();
+}, []);
+
   const progress = step / TOTAL_STEPS;
 
   const next = async () => {
   if (step === 3) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await supabase.from('users').upsert({
+      const { data, error } = await supabase.from('users').upsert({
         id: user.id,
         email: user.email,
         name: form.name,
         age: parseInt(form.age),
         fitness_level: form.fitnessLevel,
       });
+      console.log('upsert result', data, 'error', error)
     }
   }
 

@@ -146,7 +146,9 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
 export default function PlanScreen() {
   const router = useRouter();
   const { plan } = useLocalSearchParams<{ plan: string }>();
-  const exercises: Exercise[] = plan ? JSON.parse(plan).exercises : [];
+
+  const parsed = plan ? JSON.parse(plan) : null;
+  const exercises: Exercise[] = parsed?.exercises ?? [];
 
   return (
     <View style={styles.screen}>

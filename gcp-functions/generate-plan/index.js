@@ -72,7 +72,7 @@ A patient has the following profile:
 - Condition: ${condition}
 - Goals: ${goals}
 
-From the following exercises, select the best 3 for this patient and explain why each is appropriate.
+From the following exercises, select the best 3 for this patient to do daily and explain why each is appropriate.
 Return ONLY a JSON object with a field "exercises" containing an array of 3 objects, each with fields: name and rationale.
 
 Available exercises (choose ONLY from these):

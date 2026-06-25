@@ -1,6 +1,6 @@
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
-import { supabase } from "../../.lib/supabase";
+import { supabase } from "../services/supabase";
 import { useState, useEffect } from "react";
 //useEffect needed to check Supabase for existing profile data 
 

@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useState } from "react";
 import {
+  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -23,6 +24,7 @@ type Exercise = {
   body_area: string;
   instructions: string;
   rationale: string;
+  gif_url?: string | null;
 };
 
 const CARD_HEIGHT = 240;
@@ -67,6 +69,13 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
             onPress={flip}
             activeOpacity={0.9}
           >
+            {exercise.gif_url ? (
+              <Image
+                source={{ uri: exercise.gif_url }}
+                style={styles.exerciseGif}
+                resizeMode="contain"
+              />
+            ) : null}
             <View style={styles.muscleTag}>
               <Text style={styles.muscleTagText}>{exercise.body_area}</Text>
             </View>
@@ -124,10 +133,18 @@ function FlipCard({ exercise }: { exercise: Exercise }) {
           <Pressable style={styles.modalSheet} onPress={() => {}}>
             <View style={styles.modalHandle} />
             <Text style={styles.modalTitle}>{exercise.name}</Text>
-            <View style={styles.modalGif}>
-              <Text style={styles.modalGifIcon}>🎬</Text>
-              <Text style={styles.modalGifText}>GIF coming soon</Text>
-            </View>
+            {exercise.gif_url ? (
+              <Image
+                source={{ uri: exercise.gif_url }}
+                style={{ width: '100%', height: 180, borderRadius: 14 }}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={styles.modalGif}>
+                <Text style={styles.modalGifIcon}>🎬</Text>
+                <Text style={styles.modalGifText}>GIF coming soon</Text>
+              </View>
+            )}
             <Text style={styles.modalInstructions}>{exercise.instructions}</Text>
             <Text style={styles.modalRationale}>Why this exercise: {exercise.rationale}</Text>
             <TouchableOpacity
@@ -148,6 +165,7 @@ export default function PlanScreen() {
   const { plan } = useLocalSearchParams<{ plan: string }>();
 
   const parsed = plan ? JSON.parse(plan) : null;
+  console.log('plan data:', parsed);
   const exercises: Exercise[] = parsed?.exercises ?? [];
 
   return (
@@ -235,6 +253,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textTransform: "uppercase",
     letterSpacing: 0.5,
+  },
+  exerciseGif: {
+    width: "100%",
+    height: 200,
   },
   exerciseName: {
     fontSize: 24,

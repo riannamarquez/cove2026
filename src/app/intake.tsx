@@ -138,8 +138,6 @@ console.log('user id being sent:', user?.id);
       });
       const plan = await response.json();
 
-    const plan = await response.json();
-
 // Save plan to Supabase
 if (user) {
   const { error: planError } = await supabase.from('plans').insert({

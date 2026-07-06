@@ -89,7 +89,10 @@ ${exerciseList}`;
     // merge GPT's picks with the full Supabase rows so sets/reps/instructions
     // always come from the database, not GPT
     const enriched = result.exercises.map(gptEx => {
-        const dbEx = exercises.find(e => e.name === gptEx.name);
+        const dbEx = exercises.find(
+            e => e.name.toLowerCase().trim() === gptEx.name.toLowerCase().trim()
+        );
+    console.log('gptEx name:', gptEx.name, '| dbEx found:', !!dbEx, '| gif_url:', dbEx?.gif_url)
         return { ...dbEx, rationale: gptEx.rationale };
     });
 

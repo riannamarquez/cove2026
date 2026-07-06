@@ -111,6 +111,9 @@ useEffect(() => {
     }
   }
 
+  const { data: { user } } = await supabase.auth.getUser();
+console.log('user id being sent:', user?.id);
+
   if (step < TOTAL_STEPS) {
     setStep(step + 1);
   } else {
@@ -134,6 +137,25 @@ useEffect(() => {
         }),
       });
       const plan = await response.json();
+
+    const plan = await response.json();
+
+// Save plan to Supabase
+if (user) {
+  const { error: planError } = await supabase.from('plans').insert({
+    user_id: user.id,
+    exercises: JSON.stringify(plan.exercises),
+    body_area: form.bodyArea,
+    pain_level: form.painLevel,
+    recovery_stage: form.recoveryType,
+    fitness_level: form.fitnessLevel,
+    plan_data: plan,
+  });
+  console.log('plan save error:', planError);
+}
+
+router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } });
+    
       router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } });
     } catch (e) {
       console.error('Failed to generate plan:', e);

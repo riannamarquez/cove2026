@@ -81,7 +81,7 @@ export default function HomeScreen() {
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.primaryBtn}
-          onPress={() => router.push("/intake")}
+          onPress={() => router.push("/disclaimer")}
         >
           <Text style={styles.primaryBtnText}>Create New Plan →</Text>
         </TouchableOpacity>

@@ -1,197 +1,356 @@
-import { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import { useCameraPermissions } from "expo-camera";
 import {
-  KeyboardAvoidingView,
-  Platform,
+  ActivityIndicator,
+  Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
-const EXERCISES = [
-  "Straight Leg Raises",
-  "Quad Sets",
-  "Terminal Knee Extension",
-];
+import { supabase } from "../../../.lib/supabase";
 
-const MOCK_FEEDBACKS = [
-  "Your back looks flat — great core position! Try raising the leg a bit higher for full range of motion.",
-  "Watch your hip — it's tilting slightly on the raise. Keep both hips level on the mat.",
-  "Good alignment overall. Slow down the lowering phase for more eccentric control.",
-];
-
-type Message = {
-  role: "ai" | "user";
-  text: string;
+type PlanExercise = {
+  name: string;
 };
 
+type Photo = {
+  uri: string;
+  base64: string;
+};
+
+type FormFeedback = {
+  overallForm: string;
+  corrections?: string[];
+  positives?: string[];
+  imageIssue?: string;
+};
+
+const CHECK_FORM_URL =
+  "https://us-central1-cove-app-499119.cloudfunctions.net/check-form";
+
+function formColor(overallForm: string) {
+  if (overallForm === "Good") return "#4ADE80";
+  if (overallForm === "Needs Work") return "#FBBF24";
+  if (overallForm === "Stop — Safety Risk") return "#F87171";
+  return "#fff";
+}
+
 export default function CameraScreen() {
-  const [selectedExercise, setSelectedExercise] = useState(0);
-  const [feedbackIndex, setFeedbackIndex] = useState(0);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "ai", text: MOCK_FEEDBACKS[0] },
-  ]);
-  const [inputText, setInputText] = useState("");
+  const [permission, requestPermission] = useCameraPermissions();
 
-  const captureFeedback = () => {
-    const next = (feedbackIndex + 1) % MOCK_FEEDBACKS.length;
-    setFeedbackIndex(next);
-    setMessages((prev) => [
-      ...prev,
-      { role: "ai", text: MOCK_FEEDBACKS[next] },
-    ]);
+  const [exercises, setExercises] = useState<PlanExercise[]>([]);
+  const [exercisesLoading, setExercisesLoading] = useState(true);
+  const [exercisesError, setExercisesError] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  const [photo1, setPhoto1] = useState<Photo | null>(null);
+  const [photo2, setPhoto2] = useState<Photo | null>(null);
+
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState("");
+  const [feedback, setFeedback] = useState<FormFeedback | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      async function load() {
+        setExercisesLoading(true);
+        setExercisesError("");
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (!user) {
+            if (!cancelled) setExercisesError("Not signed in.");
+            return;
+          }
+
+          const { data, error } = await supabase
+            .from("plans")
+            .select("exercises")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          if (error) throw error;
+
+          const raw = data?.[0]?.exercises;
+          const parsed: PlanExercise[] = raw
+            ? typeof raw === "string"
+              ? JSON.parse(raw)
+              : raw
+            : [];
+
+          if (!cancelled) setExercises(parsed);
+        } catch (e) {
+          if (!cancelled) {
+            setExercisesError(
+              e instanceof Error ? e.message : "Failed to load exercises."
+            );
+          }
+        } finally {
+          if (!cancelled) setExercisesLoading(false);
+        }
+      }
+
+      load();
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
+  const capture = async (position: 1 | 2) => {
+    if (!permission?.granted) {
+      const res = await requestPermission();
+      if (!res.granted) return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
+      base64: true,
+      quality: 0.5,
+    });
+
+    if (result.canceled) return;
+    const asset = result.assets[0];
+    if (!asset?.base64) return;
+
+    const photo: Photo = { uri: asset.uri, base64: asset.base64 };
+    if (position === 1) setPhoto1(photo);
+    else setPhoto2(photo);
   };
 
-  const sendMessage = () => {
-    const text = inputText.trim();
-    if (!text) return;
-    setInputText("");
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text },
-      {
-        role: "ai",
-        text: "Good question! Focus on the muscle engagement rather than speed — quality reps matter more than quantity here.",
-      },
-    ]);
+  const analyze = async () => {
+    if (selectedIndex === null || !photo1 || !photo2) return;
+
+    setAnalyzing(true);
+    setAnalyzeError("");
+    try {
+      const response = await fetch(CHECK_FORM_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exercise: exercises[selectedIndex].name,
+          image1: photo1.base64,
+          image2: photo2.base64,
+        }),
+      });
+      const json = await response.json();
+      setFeedback(json);
+    } catch (e) {
+      setAnalyzeError(
+        e instanceof Error ? e.message : "Failed to analyze your form."
+      );
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
-  const latestFeedback = messages.filter((m) => m.role === "ai").slice(-1)[0]?.text ?? "";
+  const tryAgain = () => {
+    setPhoto1(null);
+    setPhoto2(null);
+    setFeedback(null);
+    setAnalyzeError("");
+  };
+
+  const canAnalyze =
+    selectedIndex !== null && !!photo1 && !!photo2 && !analyzing;
+
+  const permissionBlocked =
+    permission !== null && !permission.granted && !permission.canAskAgain;
 
   return (
     <View style={styles.screen}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Form Coach</Text>
-        <Text style={styles.headerSub}>Get real-time AI feedback on your form</Text>
-      </View>
-
-      {/* Exercise selector */}
       <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.selectorScroll}
-        contentContainerStyle={styles.selectorContent}
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
       >
-        {EXERCISES.map((ex, i) => (
-          <TouchableOpacity
-            key={i}
-            style={[
-              styles.selectorChip,
-              selectedExercise === i && styles.selectorChipActive,
-            ]}
-            onPress={() => setSelectedExercise(i)}
-          >
-            <Text
-              style={[
-                styles.selectorChipText,
-                selectedExercise === i && styles.selectorChipTextActive,
-              ]}
-              numberOfLines={1}
-            >
-              {ex}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Camera view placeholder */}
-      <View style={styles.cameraContainer}>
-        <View style={styles.cameraPlaceholder}>
-          <Text style={styles.cameraIcon}>📷</Text>
-          <Text style={styles.cameraText}>Camera Feed</Text>
-          <Text style={styles.cameraSubtext}>
-            Install expo-camera to enable live feed
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Form Coach</Text>
+          <Text style={styles.headerSub}>
+            Get AI feedback on your exercise form
           </Text>
         </View>
-        {/* Corner guides */}
-        <View style={[styles.corner, styles.cornerTL]} />
-        <View style={[styles.corner, styles.cornerTR]} />
-        <View style={[styles.corner, styles.cornerBL]} />
-        <View style={[styles.corner, styles.cornerBR]} />
-      </View>
 
-      {/* Capture button */}
-      <View style={styles.captureRow}>
-        <TouchableOpacity style={styles.captureBtn} onPress={captureFeedback}>
-          <View style={styles.captureInner} />
-        </TouchableOpacity>
-      </View>
+        {/* Exercise selector */}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Select an exercise</Text>
+          {exercisesLoading && (
+            <ActivityIndicator color="#4F8EF7" style={{ marginTop: 8 }} />
+          )}
+          {!exercisesLoading && exercisesError !== "" && (
+            <Text style={styles.errorText}>{exercisesError}</Text>
+          )}
+          {!exercisesLoading && exercisesError === "" && exercises.length === 0 && (
+            <Text style={styles.emptyText}>
+              No plan found yet. Generate a plan first.
+            </Text>
+          )}
+          {!exercisesLoading && exercises.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.chipRow}
+            >
+              {exercises.map((ex, i) => (
+                <TouchableOpacity
+                  key={i}
+                  style={[
+                    styles.chip,
+                    selectedIndex === i && styles.chipActive,
+                  ]}
+                  onPress={() => setSelectedIndex(i)}
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      selectedIndex === i && styles.chipTextActive,
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {ex.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+        </View>
 
-      {/* Feedback bar / Chat */}
-      {isChatOpen ? (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.chatContainer}
-        >
-          <View style={styles.chatHeader}>
-            <View style={styles.chatHandle} />
-            <View style={styles.chatHeaderRow}>
-              <Text style={styles.chatHeaderTitle}>AI Feedback</Text>
-              <TouchableOpacity onPress={() => setIsChatOpen(false)}>
-                <Text style={styles.chatCloseText}>✕</Text>
+        {/* Permission blocked message */}
+        {permissionBlocked && (
+          <View style={styles.section}>
+            <View style={styles.permissionCard}>
+              <Text style={styles.permissionText}>
+                Cove needs camera access to capture photos of your exercise
+                form. Please enable camera permissions in Settings to
+                continue.
+              </Text>
+              <TouchableOpacity
+                style={styles.permissionBtn}
+                onPress={() => Linking.openSettings()}
+              >
+                <Text style={styles.permissionBtnText}>Open Settings</Text>
               </TouchableOpacity>
             </View>
           </View>
-          <ScrollView
-            style={styles.chatMessages}
-            contentContainerStyle={styles.chatMessagesContent}
+        )}
+
+        {/* Capture buttons */}
+        {!permissionBlocked && (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Capture your form</Text>
+            <View style={styles.captureGrid}>
+              <View style={styles.captureCol}>
+                <TouchableOpacity
+                  style={styles.captureBtn}
+                  onPress={() => capture(1)}
+                >
+                  <Text style={styles.captureBtnText}>Capture Position 1</Text>
+                </TouchableOpacity>
+                {photo1 && (
+                  <View style={styles.thumbWrap}>
+                    <Image source={{ uri: photo1.uri }} style={styles.thumb} />
+                    <Text style={styles.thumbLabel}>Position 1</Text>
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.captureCol}>
+                <TouchableOpacity
+                  style={styles.captureBtn}
+                  onPress={() => capture(2)}
+                >
+                  <Text style={styles.captureBtnText}>Capture Position 2</Text>
+                </TouchableOpacity>
+                {photo2 && (
+                  <View style={styles.thumbWrap}>
+                    <Image source={{ uri: photo2.uri }} style={styles.thumb} />
+                    <Text style={styles.thumbLabel}>Position 2</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* Analyze button */}
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={[styles.analyzeBtn, !canAnalyze && styles.analyzeBtnDisabled]}
+            onPress={analyze}
+            disabled={!canAnalyze}
           >
-            {messages.map((msg, i) => (
-              <View
-                key={i}
+            {analyzing ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.analyzeBtnText}>Analyze My Form →</Text>
+            )}
+          </TouchableOpacity>
+          {analyzeError !== "" && (
+            <Text style={styles.errorText}>{analyzeError}</Text>
+          )}
+        </View>
+
+        {/* Feedback display */}
+        {feedback && (
+          <View style={styles.section}>
+            <View style={styles.feedbackCard}>
+              <Text
                 style={[
-                  styles.bubble,
-                  msg.role === "user" ? styles.userBubble : styles.aiBubble,
+                  styles.overallForm,
+                  { color: formColor(feedback.overallForm) },
                 ]}
               >
-                {msg.role === "ai" && (
-                  <Text style={styles.bubbleRole}>AI</Text>
-                )}
-                <Text
-                  style={[
-                    styles.bubbleText,
-                    msg.role === "user" && styles.userBubbleText,
-                  ]}
-                >
-                  {msg.text}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.chatInput}
-              value={inputText}
-              onChangeText={setInputText}
-              placeholder="Ask a question..."
-              placeholderTextColor="#555"
-              multiline
-              onSubmitEditing={sendMessage}
-            />
-            <TouchableOpacity
-              style={[styles.sendBtn, !inputText.trim() && styles.sendBtnDisabled]}
-              onPress={sendMessage}
-              disabled={!inputText.trim()}
-            >
-              <Text style={styles.sendBtnText}>↑</Text>
-            </TouchableOpacity>
+                {feedback.overallForm}
+              </Text>
+
+              {feedback.imageIssue ? (
+                <View style={styles.warningBox}>
+                  <Text style={styles.warningTitle}>⚠ Image Issue</Text>
+                  <Text style={styles.warningText}>{feedback.imageIssue}</Text>
+                </View>
+              ) : (
+                feedback.corrections &&
+                feedback.corrections.length > 0 && (
+                  <View style={styles.feedbackGroup}>
+                    <Text style={styles.feedbackGroupTitle}>
+                      Corrections
+                    </Text>
+                    {feedback.corrections.map((item, i) => (
+                      <Text key={i} style={styles.bulletText}>
+                        •  {item}
+                      </Text>
+                    ))}
+                  </View>
+                )
+              )}
+
+              {feedback.positives && feedback.positives.length > 0 && (
+                <View style={styles.feedbackGroup}>
+                  <Text style={styles.feedbackGroupTitle}>What's working</Text>
+                  {feedback.positives.map((item, i) => (
+                    <Text key={i} style={styles.bulletText}>
+                      •  {item}
+                    </Text>
+                  ))}
+                </View>
+              )}
+
+              <TouchableOpacity style={styles.tryAgainBtn} onPress={tryAgain}>
+                <Text style={styles.tryAgainBtnText}>Try Again</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </KeyboardAvoidingView>
-      ) : (
-        <TouchableOpacity style={styles.feedbackBar} onPress={() => setIsChatOpen(true)}>
-          <View style={styles.aiBadge}>
-            <Text style={styles.aiBadgeText}>AI</Text>
-          </View>
-          <Text style={styles.feedbackBarText} numberOfLines={1}>
-            {latestFeedback}
-          </Text>
-          <Text style={styles.expandHint}>↑ expand</Text>
-        </TouchableOpacity>
-      )}
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -200,6 +359,9 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: "#0f0f0f",
+  },
+  scroll: {
+    paddingBottom: 100,
   },
   header: {
     paddingTop: 60,
@@ -216,15 +378,31 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#666",
   },
-  selectorScroll: {
-    flexGrow: 0,
-    marginBottom: 12,
-  },
-  selectorContent: {
+  section: {
     paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  sectionLabel: {
+    color: "#888",
+    fontSize: 13,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: "#F87171",
+    fontSize: 13,
+    marginTop: 8,
+  },
+  emptyText: {
+    color: "#555",
+    fontSize: 14,
+  },
+  chipRow: {
     gap: 8,
   },
-  selectorChip: {
+  chip: {
     backgroundColor: "#1a1a1a",
     borderRadius: 20,
     paddingHorizontal: 16,
@@ -232,234 +410,152 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#2a2a2a",
   },
-  selectorChipActive: {
+  chipActive: {
     backgroundColor: "#0d1f3c",
     borderColor: "#4F8EF7",
   },
-  selectorChipText: {
+  chipText: {
     color: "#888",
     fontSize: 13,
     fontWeight: "600",
   },
-  selectorChipTextActive: {
+  chipTextActive: {
     color: "#4F8EF7",
   },
-  cameraContainer: {
-    flex: 1,
-    marginHorizontal: 20,
-    borderRadius: 16,
-    overflow: "hidden",
-    position: "relative",
-    backgroundColor: "#050505",
-    borderWidth: 1,
-    borderColor: "#1e1e1e",
-  },
-  cameraPlaceholder: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-  },
-  cameraIcon: { fontSize: 40 },
-  cameraText: { color: "#444", fontSize: 16, fontWeight: "600" },
-  cameraSubtext: { color: "#2a2a2a", fontSize: 12, textAlign: "center" },
-  corner: {
-    position: "absolute",
-    width: 20,
-    height: 20,
-    borderColor: "#4F8EF7",
-  },
-  cornerTL: {
-    top: 12,
-    left: 12,
-    borderTopWidth: 2,
-    borderLeftWidth: 2,
-    borderTopLeftRadius: 4,
-  },
-  cornerTR: {
-    top: 12,
-    right: 12,
-    borderTopWidth: 2,
-    borderRightWidth: 2,
-    borderTopRightRadius: 4,
-  },
-  cornerBL: {
-    bottom: 12,
-    left: 12,
-    borderBottomWidth: 2,
-    borderLeftWidth: 2,
-    borderBottomLeftRadius: 4,
-  },
-  cornerBR: {
-    bottom: 12,
-    right: 12,
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    borderBottomRightRadius: 4,
-  },
-  captureRow: {
-    alignItems: "center",
-    paddingVertical: 16,
-  },
-  captureBtn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 3,
-    borderColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  captureInner: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#fff",
-  },
-  feedbackBar: {
-    flexDirection: "row",
-    alignItems: "center",
+  permissionCard: {
     backgroundColor: "#1a1a1a",
-    marginHorizontal: 20,
-    marginBottom: 80,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    borderRadius: 16,
+    padding: 20,
     borderWidth: 1,
     borderColor: "#2a2a2a",
-    gap: 10,
+    gap: 14,
   },
-  aiBadge: {
-    backgroundColor: "#0d1f3c",
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderWidth: 1,
-    borderColor: "#1e3a6e",
+  permissionText: {
+    color: "#bbb",
+    fontSize: 14,
+    lineHeight: 20,
   },
-  aiBadgeText: {
-    color: "#4F8EF7",
-    fontSize: 11,
+  permissionBtn: {
+    backgroundColor: "#4F8EF7",
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  permissionBtnText: {
+    color: "#fff",
+    fontSize: 14,
     fontWeight: "700",
   },
-  feedbackBarText: {
-    flex: 1,
-    color: "#ccc",
-    fontSize: 13,
+  captureGrid: {
+    flexDirection: "row",
+    gap: 12,
   },
-  expandHint: {
+  captureCol: {
+    flex: 1,
+    gap: 10,
+  },
+  captureBtn: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#2a2a2a",
+  },
+  captureBtnText: {
     color: "#4F8EF7",
+    fontSize: 13,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  thumbWrap: {
+    alignItems: "center",
+    gap: 6,
+  },
+  thumb: {
+    width: "100%",
+    height: 120,
+    borderRadius: 12,
+    backgroundColor: "#111",
+    borderWidth: 1,
+    borderColor: "#2a2a2a",
+  },
+  thumbLabel: {
+    color: "#666",
     fontSize: 12,
     fontWeight: "600",
   },
-  chatContainer: {
-    backgroundColor: "#141414",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: "55%",
-    borderTopWidth: 1,
-    borderColor: "#2a2a2a",
-  },
-  chatHeader: {
-    paddingTop: 12,
-    paddingHorizontal: 20,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#2a2a2a",
-  },
-  chatHandle: {
-    width: 36,
-    height: 4,
-    backgroundColor: "#333",
-    borderRadius: 2,
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  chatHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  analyzeBtn: {
+    backgroundColor: "#4F8EF7",
+    borderRadius: 14,
+    paddingVertical: 18,
     alignItems: "center",
   },
-  chatHeaderTitle: {
+  analyzeBtnDisabled: {
+    backgroundColor: "#1a1a1a",
+  },
+  analyzeBtnText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",
   },
-  chatCloseText: {
-    color: "#666",
-    fontSize: 18,
+  feedbackCard: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#2a2a2a",
+    gap: 16,
   },
-  chatMessages: {
-    flex: 1,
+  overallForm: {
+    fontSize: 24,
+    fontWeight: "800",
+    textAlign: "center",
   },
-  chatMessagesContent: {
-    padding: 16,
-    gap: 10,
-  },
-  bubble: {
-    maxWidth: "85%",
-    borderRadius: 14,
-    padding: 12,
+  warningBox: {
+    backgroundColor: "#3c1f0d",
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: "#6e3a1e",
     gap: 4,
   },
-  aiBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: "#1e1e1e",
+  warningTitle: {
+    color: "#FBBF24",
+    fontSize: 13,
+    fontWeight: "700",
   },
-  userBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: "#1e3a6e",
+  warningText: {
+    color: "#ddd",
+    fontSize: 14,
+    lineHeight: 20,
   },
-  bubbleRole: {
-    color: "#4F8EF7",
-    fontSize: 10,
+  feedbackGroup: {
+    gap: 6,
+  },
+  feedbackGroupTitle: {
+    color: "#888",
+    fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
-  bubbleText: {
+  bulletText: {
     color: "#ccc",
     fontSize: 14,
     lineHeight: 20,
   },
-  userBubbleText: {
-    color: "#fff",
-  },
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#2a2a2a",
-  },
-  chatInput: {
-    flex: 1,
-    backgroundColor: "#1e1e1e",
+  tryAgainBtn: {
+    backgroundColor: "#0d1f3c",
     borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    color: "#fff",
-    fontSize: 14,
-    maxHeight: 100,
-    borderWidth: 1,
-    borderColor: "#2a2a2a",
-  },
-  sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#4F8EF7",
-    justifyContent: "center",
+    paddingVertical: 12,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#1e3a6e",
   },
-  sendBtnDisabled: {
-    backgroundColor: "#1e1e1e",
-  },
-  sendBtnText: {
-    color: "#fff",
-    fontSize: 18,
+  tryAgainBtnText: {
+    color: "#4F8EF7",
+    fontSize: 14,
     fontWeight: "700",
   },
 });

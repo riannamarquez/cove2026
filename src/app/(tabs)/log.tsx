@@ -1,5 +1,6 @@
 import Slider from "@react-native-community/slider";
-import { useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -11,6 +12,8 @@ import {
   View,
 } from "react-native";
 
+import { supabase } from "../../../.lib/supabase";
+
 const EXERCISES = [
   { id: "1", name: "Straight Leg Raises" },
   { id: "2", name: "Quad Sets" },
@@ -21,6 +24,13 @@ type LogEntry = {
   date: string;
   painLevel: number;
   notes: string;
+};
+
+type CameraSession = {
+  id: string;
+  exercise: string;
+  feedback: string[];
+  created_at: string;
 };
 
 function todayLabel() {
@@ -43,6 +53,32 @@ export default function LogScreen() {
   const [modalExercise, setModalExercise] = useState<(typeof EXERCISES)[0] | null>(null);
   const [painLevel, setPainLevel] = useState(5);
   const [notes, setNotes] = useState("");
+  const [cameraSessions, setCameraSessions] = useState<CameraSession[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      (async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data } = await supabase
+          .from("camera_sessions")
+          .select("id, exercise, feedback, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (!cancelled) setCameraSessions((data ?? []) as CameraSession[]);
+      })();
+
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
 
   const openModal = (exercise: (typeof EXERCISES)[0]) => {
     setModalExercise(exercise);
@@ -175,6 +211,32 @@ export default function LogScreen() {
                   </Text>
                   <Text style={styles.historyPainLabel}>/10</Text>
                 </View>
+              </View>
+            ))}
+          </>
+        )}
+
+        {/* AI form feedback from camera sessions */}
+        {cameraSessions.length > 0 && (
+          <>
+            <Text style={styles.sectionLabel}>AI Form Feedback</Text>
+            {cameraSessions.map((session) => (
+              <View key={session.id} style={styles.aiSessionCard}>
+                <View style={styles.aiSessionHeader}>
+                  <Text style={styles.historyName}>{session.exercise}</Text>
+                  <Text style={styles.historyDate}>
+                    {new Date(session.created_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </Text>
+                </View>
+                {session.feedback.map((note, i) => (
+                  <Text key={i} style={styles.aiFeedbackNote}>
+                    • {note}
+                  </Text>
+                ))}
               </View>
             ))}
           </>
@@ -352,6 +414,22 @@ const styles = StyleSheet.create({
   },
   historyPainNum: { fontSize: 18, fontWeight: "800" },
   historyPainLabel: { color: "#555", fontSize: 11 },
+  aiSessionCard: {
+    backgroundColor: "#111",
+    marginHorizontal: 20,
+    marginBottom: 8,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#1e1e1e",
+    gap: 6,
+  },
+  aiSessionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  aiFeedbackNote: { color: "#888", fontSize: 13, lineHeight: 18 },
   // Modal
   modalOverlay: {
     flex: 1,

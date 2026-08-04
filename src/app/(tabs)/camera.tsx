@@ -1,4 +1,5 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -11,7 +12,9 @@ import {
   View,
 } from "react-native";
 
-const EXERCISES = [
+import { supabase } from "../../../.lib/supabase";
+
+const FALLBACK_EXERCISES = [
   "Glute Bridge",
   "Clamshell",
   "Quad Sets",
@@ -29,12 +32,17 @@ export default function CameraScreen() {
   const cameraRef = useRef<CameraView>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const [selectedExercise, setSelectedExercise] = useState(EXERCISES[0]);
+  const [exercises, setExercises] = useState<string[]>(FALLBACK_EXERCISES);
+  const [loadingPlan, setLoadingPlan] = useState(true);
+  const [selectedExercise, setSelectedExercise] = useState(FALLBACK_EXERCISES[0]);
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [feedback, setFeedback] = useState(DEFAULT_FEEDBACK);
   const [history, setHistory] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+
+  const isAnalyzingRef = useRef(false);
+  const sessionIdRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -42,8 +50,59 @@ export default function CameraScreen() {
     };
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+
+      async function loadPlanExercises() {
+        setLoadingPlan(true);
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (!user) return;
+
+          const { data, error } = await supabase
+            .from("plans")
+            .select("plan_data")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (error || cancelled) return;
+
+          const planExercises = (
+            data?.plan_data as { exercises?: { name: string }[] } | null
+          )?.exercises;
+
+          const names = (planExercises ?? [])
+            .map((ex) => ex.name)
+            .filter((name): name is string => Boolean(name));
+
+          if (names.length > 0 && !cancelled) {
+            setExercises(names);
+            setSelectedExercise((prev) =>
+              names.includes(prev) ? prev : names[0]
+            );
+          }
+        } finally {
+          if (!cancelled) setLoadingPlan(false);
+        }
+      }
+
+      loadPlanExercises();
+      return () => {
+        cancelled = true;
+      };
+    }, [])
+  );
+
   const captureAndAnalyze = useCallback(async () => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current || isAnalyzingRef.current) return;
+
+    const requestSessionId = sessionIdRef.current;
+    isAnalyzingRef.current = true;
 
     try {
       const photo = await cameraRef.current.takePictureAsync({
@@ -51,6 +110,11 @@ export default function CameraScreen() {
         quality: 0.4,
       });
       if (!photo?.base64) return;
+      if (requestSessionId !== sessionIdRef.current) return;
+
+      // On web, expo-camera returns a full data URL ("data:image/jpeg;base64,...")
+      // instead of raw base64 — strip the prefix so the API's base64 decode doesn't fail.
+      const rawBase64 = photo.base64.replace(/^data:image\/\w+;base64,/, "");
 
       setIsAnalyzing(true);
       setFeedback("Analyzing your form...");
@@ -75,7 +139,7 @@ export default function CameraScreen() {
                   source: {
                     type: "base64",
                     media_type: "image/jpeg",
-                    data: photo.base64,
+                    data: rawBase64,
                   },
                 },
                 { type: "text", text: "Analyze my form in this photo." },
@@ -93,14 +157,18 @@ export default function CameraScreen() {
         : null;
 
       const result = textBlock?.text?.trim() || "Could not analyze frame. Keep going!";
+      if (requestSessionId !== sessionIdRef.current) return;
       setFeedback(result);
       setHistory((prev) => [...prev, result]);
     } catch {
       const result = "Could not analyze frame. Keep going!";
-      setFeedback(result);
-      setHistory((prev) => [...prev, result]);
+      if (requestSessionId === sessionIdRef.current) {
+        setFeedback(result);
+        setHistory((prev) => [...prev, result]);
+      }
     } finally {
-      setIsAnalyzing(false);
+      isAnalyzingRef.current = false;
+      if (requestSessionId === sessionIdRef.current) setIsAnalyzing(false);
     }
   }, [selectedExercise]);
 
@@ -110,6 +178,7 @@ export default function CameraScreen() {
       if (!result.granted) return;
     }
 
+    sessionIdRef.current += 1;
     setHistory([]);
     setIsSessionActive(true);
     captureAndAnalyze();
@@ -117,6 +186,7 @@ export default function CameraScreen() {
   };
 
   const stopSession = () => {
+    sessionIdRef.current += 1;
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -124,7 +194,28 @@ export default function CameraScreen() {
     setIsSessionActive(false);
     setIsAnalyzing(false);
     setFeedback("Session ended. Great work!");
+
+    if (history.length > 0) {
+      saveSessionFeedback(selectedExercise, history);
+    }
     setHistory([]);
+  };
+
+  const saveSessionFeedback = async (exercise: string, feedbackNotes: string[]) => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase.from("camera_sessions").insert({
+        user_id: user.id,
+        exercise,
+        feedback: feedbackNotes,
+      });
+    } catch {
+      // Best-effort save — don't block the UI on failure.
+    }
   };
 
   const toggleSession = () => {
@@ -140,33 +231,39 @@ export default function CameraScreen() {
         <Text style={styles.headerTitle}>Form Coach</Text>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.selectorScroll}
-        contentContainerStyle={styles.selectorContent}
-      >
-        {EXERCISES.map((exercise) => (
-          <TouchableOpacity
-            key={exercise}
-            style={[
-              styles.chip,
-              selectedExercise === exercise && styles.chipActive,
-            ]}
-            onPress={() => setSelectedExercise(exercise)}
-            disabled={isSessionActive}
-          >
-            <Text
+      {loadingPlan ? (
+        <View style={styles.selectorLoading}>
+          <ActivityIndicator color="#4F8EF7" size="small" />
+        </View>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.selectorScroll}
+          contentContainerStyle={styles.selectorContent}
+        >
+          {exercises.map((exercise) => (
+            <TouchableOpacity
+              key={exercise}
               style={[
-                styles.chipText,
-                selectedExercise === exercise && styles.chipTextActive,
+                styles.chip,
+                selectedExercise === exercise && styles.chipActive,
               ]}
+              onPress={() => setSelectedExercise(exercise)}
+              disabled={isSessionActive}
             >
-              {exercise}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              <Text
+                style={[
+                  styles.chipText,
+                  selectedExercise === exercise && styles.chipTextActive,
+                ]}
+              >
+                {exercise}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
       <View style={styles.cameraContainer}>
         {permissionBlocked ? (
@@ -284,6 +381,12 @@ const styles = StyleSheet.create({
   },
   selectorScroll: {
     flexGrow: 0,
+    marginBottom: 12,
+  },
+  selectorLoading: {
+    height: 37,
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 12,
   },
   selectorContent: {

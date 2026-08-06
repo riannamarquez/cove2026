@@ -42,9 +42,17 @@ function todayLabel() {
 }
 
 function painColor(level: number) {
-  if (level <= 3) return "#34C759";
-  if (level <= 6) return "#FF9500";
-  return "#FF3B30";
+  if (level <= 3) return "#7bc67e";
+  if (level <= 6) return "#f5a623";
+  return "#e05252";
+}
+
+function painDescription(level: number) {
+  if (level <= 2) return "Minimal";
+  if (level <= 4) return "Mild — manageable";
+  if (level <= 6) return "Moderate — noticeable";
+  if (level <= 8) return "Significant";
+  return "Severe";
 }
 
 export default function LogScreen() {
@@ -265,6 +273,9 @@ export default function LogScreen() {
             >
               {painLevel}
             </Text>
+            <Text style={styles.painDescription}>
+              {painDescription(painLevel)}
+            </Text>
             <Slider
               style={styles.slider}
               minimumValue={1}
@@ -272,9 +283,9 @@ export default function LogScreen() {
               step={1}
               value={painLevel}
               onValueChange={setPainLevel}
-              minimumTrackTintColor="#4F8EF7"
-              maximumTrackTintColor="#333"
-              thumbTintColor="#4F8EF7"
+              minimumTrackTintColor="#7bc67e"
+              maximumTrackTintColor="#2d3f2d"
+              thumbTintColor="#7bc67e"
             />
             <View style={styles.sliderLabels}>
               <Text style={styles.sliderLabel}>No pain</Text>
@@ -293,7 +304,7 @@ export default function LogScreen() {
             <TextInput
               style={styles.notesInput}
               placeholder="How did it feel? Any observations..."
-              placeholderTextColor="#555"
+              placeholderTextColor="#4a5e4a"
               multiline
               numberOfLines={3}
               value={notes}
@@ -312,7 +323,7 @@ export default function LogScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#0f0f0f" },
+  screen: { flex: 1, backgroundColor: "#1a2e1a" },
   scroll: { paddingBottom: 100 },
   header: {
     paddingTop: 60,
@@ -327,43 +338,43 @@ const styles = StyleSheet.create({
   streakCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     marginHorizontal: 20,
     borderRadius: 16,
     padding: 20,
     gap: 16,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     marginBottom: 24,
   },
-  streakEmoji: { fontSize: 36 },
+  streakEmoji: { fontSize: 36, color: "#f5a623" },
   streakNum: {
     fontSize: 28,
     fontWeight: "800",
     color: "#fff",
     lineHeight: 32,
   },
-  streakLabel: { color: "#666", fontSize: 12, fontWeight: "600" },
-  streakMsg: { flex: 1, color: "#888", fontSize: 13, lineHeight: 18 },
+  streakLabel: { color: "#8fa88f", fontSize: 12, fontWeight: "600" },
+  streakMsg: { flex: 1, color: "#8fa88f", fontSize: 13, lineHeight: 18 },
   sectionLabel: {
-    color: "#555",
-    fontSize: 12,
+    color: "#7bc67e",
+    fontSize: 11,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 1,
+    letterSpacing: 1.5,
     paddingHorizontal: 24,
     marginBottom: 10,
   },
   logCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     marginHorizontal: 20,
     marginBottom: 10,
     borderRadius: 14,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
   },
   logCardLeft: { flex: 1, gap: 6 },
   logCardName: { color: "#fff", fontSize: 16, fontWeight: "700" },
@@ -373,7 +384,7 @@ const styles = StyleSheet.create({
     gap: 8,
     flexWrap: "wrap",
   },
-  logCardMeta: { color: "#666", fontSize: 13 },
+  logCardMeta: { color: "#8fa88f", fontSize: 13 },
   painPill: {
     borderRadius: 10,
     paddingHorizontal: 8,
@@ -381,29 +392,29 @@ const styles = StyleSheet.create({
   },
   painPillText: { fontSize: 12, fontWeight: "600" },
   logCta: {
-    backgroundColor: "#0d1f3c",
+    backgroundColor: "#1e3d1e",
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#1e3a6e",
+    borderColor: "#2d3f2d",
   },
-  logCtaText: { color: "#4F8EF7", fontSize: 13, fontWeight: "700" },
+  logCtaText: { color: "#7bc67e", fontSize: 13, fontWeight: "700" },
   historyItem: {
     flexDirection: "row",
     alignItems: "flex-start",
-    backgroundColor: "#111",
+    backgroundColor: "#1a2e1a",
     marginHorizontal: 20,
     marginBottom: 8,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#1e1e1e",
+    borderColor: "#2d3f2d",
   },
   historyLeft: { flex: 1, gap: 3 },
   historyName: { color: "#ccc", fontSize: 14, fontWeight: "600" },
-  historyDate: { color: "#555", fontSize: 12 },
-  historyNotes: { color: "#444", fontSize: 12, marginTop: 2 },
+  historyDate: { color: "#6b856b", fontSize: 12 },
+  historyNotes: { color: "#6b856b", fontSize: 12, marginTop: 2 },
   historyPainBadge: {
     flexDirection: "row",
     alignItems: "baseline",
@@ -413,15 +424,15 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   historyPainNum: { fontSize: 18, fontWeight: "800" },
-  historyPainLabel: { color: "#555", fontSize: 11 },
+  historyPainLabel: { color: "#6b856b", fontSize: 11 },
   aiSessionCard: {
-    backgroundColor: "#111",
+    backgroundColor: "#1a2e1a",
     marginHorizontal: 20,
     marginBottom: 8,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#1e1e1e",
+    borderColor: "#2d3f2d",
     gap: 6,
   },
   aiSessionHeader: {
@@ -429,7 +440,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  aiFeedbackNote: { color: "#888", fontSize: 13, lineHeight: 18 },
+  aiFeedbackNote: { color: "#8fa88f", fontSize: 13, lineHeight: 18 },
   // Modal
   modalOverlay: {
     flex: 1,
@@ -437,7 +448,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalSheet: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 24,
@@ -447,19 +458,19 @@ const styles = StyleSheet.create({
   modalHandle: {
     width: 40,
     height: 4,
-    backgroundColor: "#444",
+    backgroundColor: "#3d4f3d",
     borderRadius: 2,
     alignSelf: "center",
     marginBottom: 4,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "800",
     color: "#fff",
   },
-  modalDate: { color: "#666", fontSize: 13 },
+  modalDate: { color: "#8fa88f", fontSize: 13 },
   modalLabel: {
-    color: "#888",
+    color: "#8fa88f",
     fontSize: 13,
     fontWeight: "600",
     textTransform: "uppercase",
@@ -472,35 +483,41 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 64,
   },
+  painDescription: {
+    fontSize: 15,
+    color: "#8fa88f",
+    textAlign: "center",
+    marginTop: -8,
+  },
   slider: { width: "100%", height: 40 },
   sliderLabels: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: -4,
   },
-  sliderLabel: { color: "#666", fontSize: 12 },
+  sliderLabel: { color: "#8fa88f", fontSize: 12 },
   previousPain: {
-    color: "#555",
+    color: "#6b856b",
     fontSize: 13,
     textAlign: "center",
     fontStyle: "italic",
   },
   notesInput: {
-    backgroundColor: "#111",
+    backgroundColor: "#1a2e1a",
     borderRadius: 12,
     padding: 14,
     fontSize: 15,
     color: "#fff",
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     minHeight: 88,
   },
   saveBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: "center",
     marginTop: 4,
   },
-  saveBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  saveBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
 });

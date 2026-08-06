@@ -48,6 +48,14 @@ const RECOVERY_OPTIONS = [
   },
 ];
 
+function painDescription(level: number) {
+  if (level <= 2) return "Minimal";
+  if (level <= 4) return "Mild — manageable";
+  if (level <= 6) return "Moderate — noticeable";
+  if (level <= 8) return "Significant";
+  return "Severe";
+}
+
 const BODY_AREAS = [
   { id: "neck", label: "Neck" },
   { id: "shoulder", label: "Shoulder" },
@@ -203,7 +211,7 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
             <TextInput
               style={styles.input}
               placeholder="Your name"
-              placeholderTextColor="#555"
+              placeholderTextColor="#4a5e4a"
               value={form.name}
               onChangeText={(v) => setForm({ ...form, name: v })}
               autoFocus
@@ -218,7 +226,7 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
             <TextInput
               style={styles.input}
               placeholder="Your age"
-              placeholderTextColor="#555"
+              placeholderTextColor="#4a5e4a"
               keyboardType="numeric"
               value={form.age}
               onChangeText={(v) => setForm({ ...form, age: v })}
@@ -331,6 +339,9 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
             <Text style={styles.question}>How much pain are you in?</Text>
             <Text style={styles.subtitle}>1 = no pain, 10 = severe</Text>
             <Text style={styles.painNumber}>{Math.round(form.painLevel)}</Text>
+            <Text style={styles.painDescription}>
+              {painDescription(form.painLevel)}
+            </Text>
             <Slider
               style={styles.slider}
               minimumValue={1}
@@ -338,9 +349,9 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
               step={1}
               value={form.painLevel}
               onValueChange={(v) => setForm({ ...form, painLevel: v })}
-              minimumTrackTintColor="#4F8EF7"
-              maximumTrackTintColor="#333"
-              thumbTintColor="#4F8EF7"
+              minimumTrackTintColor="#7bc67e"
+              maximumTrackTintColor="#2d3f2d"
+              thumbTintColor="#7bc67e"
             />
             <View style={styles.sliderLabels}>
               <Text style={styles.sliderLabel}>No pain</Text>
@@ -364,7 +375,12 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
           onPress={next}
           disabled={!canProceed()}
         >
-          <Text style={styles.nextBtnText}>
+          <Text
+            style={[
+              styles.nextBtnText,
+              !canProceed() && styles.nextBtnTextDisabled,
+            ]}
+          >
             {step === TOTAL_STEPS ? "Build My Plan →" : "Continue →"}
           </Text>
         </TouchableOpacity>
@@ -374,7 +390,7 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0f0f0f" },
+  container: { flex: 1, backgroundColor: "#1a2e1a" },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -384,16 +400,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   backBtn: { position: "absolute", left: 24, padding: 8 },
-  backText: { color: "#fff", fontSize: 22 },
-  stepLabel: { color: "#666", fontSize: 13, fontWeight: "600" },
+  backText: { color: "#8fa88f", fontSize: 22 },
+  stepLabel: { color: "#8fa88f", fontSize: 13, fontWeight: "600" },
   progressTrack: {
     height: 3,
-    backgroundColor: "#222",
+    backgroundColor: "#2d3f2d",
     marginHorizontal: 24,
     borderRadius: 2,
     marginBottom: 8,
   },
-  progressFill: { height: 3, backgroundColor: "#4F8EF7", borderRadius: 2 },
+  progressFill: { height: 3, backgroundColor: "#7bc67e", borderRadius: 2 },
   content: {
     flexGrow: 1,
     paddingHorizontal: 24,
@@ -408,57 +424,63 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     lineHeight: 36,
   },
-  subtitle: { fontSize: 15, color: "#666", marginBottom: 36 },
+  subtitle: { fontSize: 15, color: "#8fa88f", marginBottom: 36 },
   input: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 14,
     padding: 18,
     fontSize: 18,
     color: "#fff",
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
   },
   optionList: { gap: 12 },
   optionCard: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 14,
     padding: 18,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     flexDirection: "row",
     alignItems: "center",
   },
   optionCardLarge: { padding: 22 },
-  optionCardSelected: { borderColor: "#4F8EF7", backgroundColor: "#0d1f3c" },
+  optionCardSelected: { borderColor: "#7bc67e", backgroundColor: "#1e3d1e" },
   optionTextGroup: { flex: 1 },
-  optionText: { color: "#aaa", fontSize: 16, fontWeight: "600" },
-  optionTextSelected: { color: "#4F8EF7" },
-  optionDesc: { color: "#555", fontSize: 13, marginTop: 2 },
+  optionText: { color: "#8fa88f", fontSize: 16, fontWeight: "600" },
+  optionTextSelected: { color: "#7bc67e" },
+  optionDesc: { color: "#6b856b", fontSize: 13, marginTop: 2 },
   optionEmoji: { fontSize: 24, marginRight: 14 },
-  checkmark: { color: "#4F8EF7", fontSize: 18, fontWeight: "700" },
+  checkmark: { color: "#7bc67e", fontSize: 18, fontWeight: "700" },
   bodyGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
   },
   bodyChip: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 24,
+    backgroundColor: "#243324",
+    borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
   },
   bodyChipSelected: {
-    backgroundColor: "#0d1f3c",
-    borderColor: "#4F8EF7",
+    backgroundColor: "#1e3d1e",
+    borderColor: "#7bc67e",
   },
-  bodyChipText: { color: "#aaa", fontSize: 15, fontWeight: "600" },
-  bodyChipTextSelected: { color: "#4F8EF7" },
+  bodyChipText: { color: "#8fa88f", fontSize: 15, fontWeight: "600" },
+  bodyChipTextSelected: { color: "#7bc67e" },
   painNumber: {
     fontSize: 72,
     fontWeight: "800",
     color: "#fff",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  painDescription: {
+    fontSize: 15,
+    color: "#8fa88f",
     textAlign: "center",
     marginBottom: 16,
   },
@@ -468,32 +490,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 4,
   },
-  sliderLabel: { color: "#666", fontSize: 12 },
+  sliderLabel: { color: "#8fa88f", fontSize: 12 },
   warningBox: {
-    backgroundColor: "#2a1500",
+    backgroundColor: "#3d1f1f",
     borderRadius: 12,
     padding: 16,
     marginTop: 24,
     borderWidth: 1,
-    borderColor: "#ff6b00",
+    borderColor: "#e05252",
   },
-  warningText: { color: "#ff9940", fontSize: 14, lineHeight: 20 },
+  warningText: { color: "#e05252", fontSize: 14, lineHeight: 20 },
   footer: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     padding: 24,
-    backgroundColor: "#0f0f0f",
+    backgroundColor: "#1a2e1a",
     borderTopWidth: 1,
-    borderTopColor: "#1a1a1a",
+    borderTopColor: "#2d3f2d",
   },
   nextBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     paddingVertical: 18,
     borderRadius: 14,
     alignItems: "center",
   },
-  nextBtnDisabled: { backgroundColor: "#1a1a1a" },
-  nextBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  nextBtnDisabled: { backgroundColor: "#2d3f2d" },
+  nextBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  nextBtnTextDisabled: { color: "#4a5e4a" },
 });

@@ -71,33 +71,40 @@ export default function HomeScreen() {
 
         <View style={styles.streakBadge}>
           {streakLoading ? (
-            <ActivityIndicator color="#4F8EF7" size="small" />
+            <ActivityIndicator color="#7bc67e" size="small" />
           ) : (
-            <Text style={styles.streakText}>🔥 {streak} day streak</Text>
+            <View style={styles.streakRow}>
+              <Text style={styles.streakEmoji}>🔥</Text>
+              <Text style={styles.streakNum}>{streak}</Text>
+              <Text style={styles.streakSuffix}>day streak</Text>
+            </View>
           )}
         </View>
       </View>
 
       <View style={styles.actions}>
         <TouchableOpacity
-          style={styles.primaryBtn}
+          style={styles.actionCard}
           onPress={() => router.push("/disclaimer")}
         >
-          <Text style={styles.primaryBtnText}>Create New Plan →</Text>
+          <Text style={styles.actionCardText}>Create New Plan</Text>
+          <Text style={styles.actionCardArrow}>→</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.secondaryBtn}
+          style={styles.actionCard}
           onPress={() => router.push("/(tabs)/pastPlans")}
         >
-          <Text style={styles.secondaryBtnText}>View Past Plans</Text>
+          <Text style={styles.actionCardText}>View Past Plans</Text>
+          <Text style={styles.actionCardArrow}>→</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.secondaryBtn}
+          style={styles.actionCard}
           onPress={() => router.push("/(tabs)/profile")}
         >
-          <Text style={styles.secondaryBtnText}>My Profile</Text>
+          <Text style={styles.actionCardText}>My Profile</Text>
+          <Text style={styles.actionCardArrow}>→</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -107,7 +114,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f0f0f",
+    backgroundColor: "#1a2e1a",
     paddingHorizontal: 24,
     justifyContent: "center",
     gap: 48,
@@ -116,37 +123,40 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 56,
     fontWeight: "800",
-    color: "#fff",
+    color: "#7bc67e",
     letterSpacing: -1,
   },
-  tagline: { fontSize: 15, color: "#555" },
+  tagline: { fontSize: 15, color: "#8fa88f" },
   streakBadge: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     minWidth: 120,
     alignItems: "center",
     marginTop: 4,
   },
-  streakText: { color: "#fff", fontSize: 15, fontWeight: "700" },
+  streakRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 6,
+  },
+  streakEmoji: { fontSize: 15, color: "#f5a623" },
+  streakNum: { color: "#fff", fontSize: 15, fontWeight: "800" },
+  streakSuffix: { color: "#8fa88f", fontSize: 13, fontWeight: "600" },
   actions: { gap: 14 },
-  primaryBtn: {
-    backgroundColor: "#4F8EF7",
-    paddingVertical: 18,
-    borderRadius: 14,
+  actionCard: {
+    flexDirection: "row",
     alignItems: "center",
-  },
-  primaryBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  secondaryBtn: {
-    backgroundColor: "#1a1a1a",
-    paddingVertical: 18,
-    borderRadius: 14,
-    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#243324",
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
+    borderRadius: 16,
+    padding: 20,
   },
-  secondaryBtnText: { color: "#aaa", fontSize: 16, fontWeight: "600" },
+  actionCardText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  actionCardArrow: { color: "#7bc67e", fontSize: 18, fontWeight: "700" },
 });

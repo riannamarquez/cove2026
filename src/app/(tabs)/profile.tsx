@@ -111,7 +111,7 @@ export default function ProfileScreen() {
 
       {loading && (
         <View style={styles.center}>
-          <ActivityIndicator color="#4F8EF7" size="large" />
+          <ActivityIndicator color="#7bc67e" size="large" />
         </View>
       )}
 
@@ -160,23 +160,23 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0f0f0f" },
+  container: { flex: 1, backgroundColor: "#1a2e1a" },
   header: {
     paddingTop: 60,
     paddingHorizontal: 24,
     paddingBottom: 20,
   },
   backBtn: { alignSelf: "flex-start", marginBottom: 16 },
-  backBtnText: { color: "#4F8EF7", fontSize: 14, fontWeight: "600" },
+  backBtnText: { color: "#7bc67e", fontSize: 14, fontWeight: "600" },
   title: { fontSize: 28, fontWeight: "800", color: "#fff" },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 },
-  errorText: { color: "#ff6b6b", fontSize: 15, textAlign: "center" },
+  errorText: { color: "#e05252", fontSize: 15, textAlign: "center" },
   scroll: { paddingHorizontal: 24, paddingBottom: 60, gap: 20 },
   card: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     overflow: "hidden",
   },
   row: {
@@ -186,16 +186,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
-  rowLabel: { color: "#666", fontSize: 14, fontWeight: "600" },
+  rowLabel: { color: "#8fa88f", fontSize: 14, fontWeight: "600" },
   rowValue: { color: "#fff", fontSize: 14, fontWeight: "600", flexShrink: 1, textAlign: "right", marginLeft: 12 },
-  divider: { height: 1, backgroundColor: "#2a2a2a", marginHorizontal: 20 },
+  divider: { height: 1, backgroundColor: "#2d3f2d", marginHorizontal: 20 },
   signOutBtn: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 14,
     paddingVertical: 18,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#3a1a1a",
+    borderColor: "#2d3f2d",
   },
-  signOutBtnText: { color: "#ff6b6b", fontSize: 16, fontWeight: "700" },
+  signOutBtnText: { color: "#e05252", fontSize: 16, fontWeight: "700" },
 });

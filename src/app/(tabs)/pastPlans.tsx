@@ -76,7 +76,7 @@ export default function PastPlansScreen() {
 
       {loading && (
         <View style={styles.center}>
-          <ActivityIndicator color="#4F8EF7" size="large" />
+          <ActivityIndicator color="#7bc67e" size="large" />
         </View>
       )}
 
@@ -117,43 +117,43 @@ export default function PastPlansScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0f0f0f" },
+  container: { flex: 1, backgroundColor: "#1a2e1a" },
   header: {
     paddingTop: 60,
     paddingHorizontal: 24,
     paddingBottom: 20,
   },
   title: { fontSize: 28, fontWeight: "800", color: "#fff", marginBottom: 4 },
-  subtitle: { fontSize: 14, color: "#666" },
+  subtitle: { fontSize: 14, color: "#8fa88f" },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 },
-  errorText: { color: "#ff6b6b", fontSize: 15, textAlign: "center" },
-  emptyText: { color: "#555", fontSize: 15, textAlign: "center" },
+  errorText: { color: "#e05252", fontSize: 15, textAlign: "center" },
+  emptyText: { color: "#6b856b", fontSize: 15, textAlign: "center" },
   list: { paddingHorizontal: 20, paddingBottom: 100, gap: 14 },
   card: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     gap: 10,
   },
   cardTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   bodyArea: { color: "#fff", fontSize: 16, fontWeight: "700", flex: 1, marginRight: 12 },
-  date: { color: "#555", fontSize: 13 },
+  date: { color: "#6b856b", fontSize: 13 },
   painRow: { flexDirection: "row", alignItems: "center", gap: 10 },
-  painLabel: { color: "#666", fontSize: 13 },
+  painLabel: { color: "#8fa88f", fontSize: 13 },
   painBadge: {
     flexDirection: "row",
     alignItems: "baseline",
-    backgroundColor: "#0d1f3c",
+    backgroundColor: "#1e3d1e",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderWidth: 1,
-    borderColor: "#1e3a6e",
+    borderColor: "#2d3f2d",
     gap: 2,
   },
-  painValue: { color: "#4F8EF7", fontSize: 16, fontWeight: "800" },
-  painMax: { color: "#4F8EF7", fontSize: 11, opacity: 0.7 },
-  tapHint: { color: "#444", fontSize: 12, marginTop: 2 },
+  painValue: { color: "#7bc67e", fontSize: 16, fontWeight: "800" },
+  painMax: { color: "#7bc67e", fontSize: 11, opacity: 0.7 },
+  tapHint: { color: "#6b856b", fontSize: 12, marginTop: 2 },
 });

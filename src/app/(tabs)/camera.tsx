@@ -233,7 +233,7 @@ export default function CameraScreen() {
 
       {loadingPlan ? (
         <View style={styles.selectorLoading}>
-          <ActivityIndicator color="#4F8EF7" size="small" />
+          <ActivityIndicator color="#7bc67e" size="small" />
         </View>
       ) : (
         <ScrollView
@@ -281,7 +281,15 @@ export default function CameraScreen() {
             </TouchableOpacity>
           </View>
         ) : permission?.granted ? (
-          <CameraView ref={cameraRef} style={styles.camera} facing="back" />
+          <>
+            <CameraView ref={cameraRef} style={styles.camera} facing="back" />
+            {isSessionActive && (
+              <View style={styles.liveBadge}>
+                <View style={styles.liveDot} />
+                <Text style={styles.liveBadgeText}>LIVE</Text>
+              </View>
+            )}
+          </>
         ) : (
           <View style={styles.permissionCard}>
             <Text style={styles.permissionText}>
@@ -303,7 +311,12 @@ export default function CameraScreen() {
           style={[styles.actionBtn, isSessionActive && styles.actionBtnStop]}
           onPress={toggleSession}
         >
-          <Text style={styles.actionBtnText}>
+          <Text
+            style={[
+              styles.actionBtnText,
+              isSessionActive && styles.actionBtnTextStop,
+            ]}
+          >
             {isSessionActive ? "Stop" : "Start"}
           </Text>
         </TouchableOpacity>
@@ -311,7 +324,8 @@ export default function CameraScreen() {
 
       <View style={styles.feedbackSection}>
         <View style={styles.feedbackCard}>
-          {isAnalyzing && <ActivityIndicator color="#4F8EF7" style={styles.feedbackSpinner} />}
+          <Text style={styles.feedbackLabel}>✦ Form Feedback</Text>
+          {isAnalyzing && <ActivityIndicator color="#7bc67e" style={styles.feedbackSpinner} />}
           <Text style={styles.feedbackText}>{feedback}</Text>
         </View>
 
@@ -394,36 +408,60 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    backgroundColor: "#1a1a1a",
-    borderRadius: 20,
+    backgroundColor: "#243324",
+    borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
   },
   chipActive: {
-    backgroundColor: "#0d1f3c",
-    borderColor: "#4F8EF7",
+    backgroundColor: "#1e3d1e",
+    borderColor: "#7bc67e",
   },
   chipText: {
-    color: "#888",
+    color: "#8fa88f",
     fontSize: 13,
     fontWeight: "600",
   },
   chipTextActive: {
-    color: "#4F8EF7",
+    color: "#7bc67e",
   },
   cameraContainer: {
     flex: 1,
     marginHorizontal: 20,
     borderRadius: 16,
     overflow: "hidden",
-    backgroundColor: "#050505",
+    backgroundColor: "#243324",
     borderWidth: 1,
-    borderColor: "#1e1e1e",
+    borderColor: "#2d3f2d",
   },
   camera: {
     flex: 1,
+  },
+  liveBadge: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 20,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#e05252",
+  },
+  liveBadgeText: {
+    color: "#fff",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
   permissionCard: {
     flex: 1,
@@ -433,19 +471,19 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   permissionText: {
-    color: "#bbb",
+    color: "#8fa88f",
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
   },
   permissionBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     borderRadius: 12,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
   permissionBtnText: {
-    color: "#fff",
+    color: "#1a2e1a",
     fontSize: 14,
     fontWeight: "700",
   },
@@ -454,18 +492,21 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   actionBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     borderRadius: 14,
     paddingHorizontal: 48,
     paddingVertical: 16,
   },
   actionBtnStop: {
-    backgroundColor: "#3c1f1f",
+    backgroundColor: "#3d1f1f",
   },
   actionBtnText: {
-    color: "#fff",
+    color: "#1a2e1a",
     fontSize: 16,
     fontWeight: "700",
+  },
+  actionBtnTextStop: {
+    color: "#e05252",
   },
   feedbackSection: {
     marginHorizontal: 20,
@@ -473,32 +514,39 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   feedbackCard: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 14,
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
     gap: 10,
+  },
+  feedbackLabel: {
+    color: "#7bc67e",
+    fontSize: 11,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
   },
   feedbackSpinner: {
     alignSelf: "flex-start",
   },
   feedbackText: {
     color: "#fff",
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
   },
   historyBtn: {
-    backgroundColor: "#0d1f3c",
+    backgroundColor: "#1e3d1e",
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#1e3a6e",
+    borderColor: "#2d3f2d",
   },
   historyBtnText: {
-    color: "#4F8EF7",
+    color: "#7bc67e",
     fontSize: 14,
     fontWeight: "700",
   },
@@ -508,7 +556,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalSheet: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: "70%",
@@ -522,15 +570,15 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#2a2a2a",
+    borderBottomColor: "#2d3f2d",
   },
   modalTitle: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "800",
   },
   modalCloseText: {
-    color: "#888",
+    color: "#8fa88f",
     fontSize: 20,
     fontWeight: "600",
   },
@@ -539,7 +587,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   modalEmptyText: {
-    color: "#555",
+    color: "#6b856b",
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 24,
@@ -550,7 +598,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   historyIndex: {
-    color: "#4F8EF7",
+    color: "#7bc67e",
     fontSize: 14,
     fontWeight: "800",
     width: 20,
@@ -563,6 +611,6 @@ const styles = StyleSheet.create({
   },
   historyDivider: {
     height: 1,
-    backgroundColor: "#2a2a2a",
+    backgroundColor: "#2d3f2d",
   },
 });

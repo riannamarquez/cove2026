@@ -32,7 +32,7 @@ export default function DisclaimerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f0f0f",
+    backgroundColor: "#1a2e1a",
     paddingHorizontal: 24,
     justifyContent: "center",
     gap: 40,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 48,
     fontWeight: "800",
-    color: "#fff",
+    color: "#7bc67e",
     letterSpacing: -1,
   },
   disclaimer: {
@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   continueBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     paddingVertical: 18,
     borderRadius: 14,
     alignItems: "center",
   },
-  continueBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  continueBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
 });

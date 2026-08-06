@@ -83,7 +83,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#555"
+            placeholderTextColor="#4a5e4a"
             autoCapitalize="none"
             keyboardType="email-address"
             value={email}
@@ -92,7 +92,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="#555"
+            placeholderTextColor="#4a5e4a"
             secureTextEntry
             value={password}
             onChangeText={setPassword}
@@ -109,7 +109,12 @@ export default function LoginScreen() {
             onPress={handleSubmit}
             disabled={!isValid || loading}
           >
-            <Text style={styles.submitBtnText}>
+            <Text
+              style={[
+                styles.submitBtnText,
+                (!isValid || loading) && styles.submitBtnTextDisabled,
+              ]}
+            >
               {loading ? "Please wait…" : mode === "signin" ? "Sign In →" : "Create Account →"}
             </Text>
           </TouchableOpacity>
@@ -124,7 +129,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0f0f0f" },
+  container: { flex: 1, backgroundColor: "#1a2e1a" },
   inner: {
     flex: 1,
     paddingHorizontal: 24,
@@ -135,13 +140,13 @@ const styles = StyleSheet.create({
   logo: {
     fontSize: 48,
     fontWeight: "800",
-    color: "#fff",
+    color: "#7bc67e",
     letterSpacing: -1,
   },
-  tagline: { fontSize: 14, color: "#555" },
+  tagline: { fontSize: 14, color: "#8fa88f" },
   toggleRow: {
     flexDirection: "row",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 12,
     padding: 4,
   },
@@ -151,38 +156,39 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  toggleBtnActive: { backgroundColor: "#2a2a2a" },
-  toggleText: { color: "#555", fontWeight: "600", fontSize: 15 },
+  toggleBtnActive: { backgroundColor: "#2d3f2d" },
+  toggleText: { color: "#8fa88f", fontWeight: "600", fontSize: 15 },
   toggleTextActive: { color: "#fff" },
   form: { gap: 12 },
   input: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#243324",
     borderRadius: 14,
     padding: 18,
     fontSize: 16,
     color: "#fff",
     borderWidth: 1,
-    borderColor: "#2a2a2a",
+    borderColor: "#2d3f2d",
   },
   errorBox: {
-    backgroundColor: "#2a0d0d",
+    backgroundColor: "#3d1f1f",
     borderRadius: 10,
     padding: 14,
     borderWidth: 1,
-    borderColor: "#6b1a1a",
+    borderColor: "#e05252",
   },
-  errorText: { color: "#ff6b6b", fontSize: 14 },
+  errorText: { color: "#e05252", fontSize: 14 },
   submitBtn: {
-    backgroundColor: "#4F8EF7",
+    backgroundColor: "#7bc67e",
     paddingVertical: 18,
     borderRadius: 14,
     alignItems: "center",
     marginTop: 4,
   },
-  submitBtnDisabled: { backgroundColor: "#1a1a1a" },
-  submitBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  submitBtnDisabled: { backgroundColor: "#2d3f2d" },
+  submitBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  submitBtnTextDisabled: { color: "#4a5e4a" },
   disclaimer: {
-    color: "#333",
+    color: "#6b856b",
     fontSize: 12,
     textAlign: "center",
     lineHeight: 18,

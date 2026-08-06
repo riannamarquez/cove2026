@@ -6,11 +6,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#4F8EF7",
-        tabBarInactiveTintColor: "#555",
+        tabBarActiveTintColor: "#7bc67e",
+        tabBarInactiveTintColor: "#4a5e4a",
         tabBarStyle: {
-          backgroundColor: "#0f0f0f",
-          borderTopColor: "#1e1e1e",
+          backgroundColor: "#1a2e1a",
+          borderTopColor: "#2d3f2d",
           paddingBottom: 8,
           height: 60,
         },
@@ -35,16 +35,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="plan"
         options={{
-          title: "Exercise Plan",
+          title: "Plan",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="barbell-outline" size={size} color={color} />
+            <Ionicons name="flash-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="camera"
         options={{
-          title: "Form Coach",
+          title: "Coach",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="camera-outline" size={size} color={color} />
           ),
@@ -53,9 +53,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="log"
         options={{
-          title: "Progress Log",
+          title: "Progress",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" size={size} color={color} />
+            <Ionicons name="trending-up-outline" size={size} color={color} />
           ),
         }}
       />

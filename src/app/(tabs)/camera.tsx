@@ -282,7 +282,7 @@ export default function CameraScreen() {
           </View>
         ) : permission?.granted ? (
           <>
-            <CameraView ref={cameraRef} style={styles.camera} facing="back" />
+            <CameraView ref={cameraRef} style={styles.camera} facing="front" />
             {isSessionActive && (
               <View style={styles.liveBadge}>
                 <View style={styles.liveDot} />

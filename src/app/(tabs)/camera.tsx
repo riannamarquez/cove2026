@@ -392,6 +392,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "800",
     color: "#fff",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   selectorScroll: {
     flexGrow: 0,
@@ -423,6 +424,7 @@ const styles = StyleSheet.create({
     color: "#8fa88f",
     fontSize: 13,
     fontWeight: "600",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   chipTextActive: {
     color: "#7bc67e",
@@ -462,6 +464,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   permissionCard: {
     flex: 1,
@@ -475,6 +478,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   permissionBtn: {
     backgroundColor: "#7bc67e",
@@ -486,6 +490,7 @@ const styles = StyleSheet.create({
     color: "#1a2e1a",
     fontSize: 14,
     fontWeight: "700",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   actionRow: {
     alignItems: "center",
@@ -504,6 +509,7 @@ const styles = StyleSheet.create({
     color: "#1a2e1a",
     fontSize: 16,
     fontWeight: "700",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   actionBtnTextStop: {
     color: "#e05252",
@@ -528,6 +534,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 1.5,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   feedbackSpinner: {
     alignSelf: "flex-start",
@@ -536,6 +543,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     lineHeight: 22,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   historyBtn: {
     backgroundColor: "#1e3d1e",
@@ -549,6 +557,7 @@ const styles = StyleSheet.create({
     color: "#7bc67e",
     fontSize: 14,
     fontWeight: "700",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalOverlay: {
     flex: 1,
@@ -576,11 +585,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 22,
     fontWeight: "800",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalCloseText: {
     color: "#8fa88f",
     fontSize: 20,
     fontWeight: "600",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalList: {
     paddingHorizontal: 20,
@@ -591,6 +602,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     paddingVertical: 24,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   historyItem: {
     flexDirection: "row",
@@ -602,12 +614,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "800",
     width: 20,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   historyText: {
     flex: 1,
     color: "#ccc",
     fontSize: 14,
     lineHeight: 20,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   historyDivider: {
     height: 1,

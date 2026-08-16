@@ -142,8 +142,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#7bc67e",
     letterSpacing: -1,
+    fontFamily: "InstrumentSerif_400Regular",
   },
-  tagline: { fontSize: 14, color: "#8fa88f" },
+  tagline: { fontSize: 14, color: "#8fa88f", fontFamily: "InstrumentSerif_400Regular" },
   toggleRow: {
     flexDirection: "row",
     backgroundColor: "#243324",
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   toggleBtnActive: { backgroundColor: "#2d3f2d" },
-  toggleText: { color: "#8fa88f", fontWeight: "600", fontSize: 15 },
+  toggleText: { color: "#8fa88f", fontWeight: "600", fontSize: 15, fontFamily: "InstrumentSerif_400Regular" },
   toggleTextActive: { color: "#fff" },
   form: { gap: 12 },
   input: {
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e05252",
   },
-  errorText: { color: "#e05252", fontSize: 14 },
+  errorText: { color: "#e05252", fontSize: 14, fontFamily: "InstrumentSerif_400Regular" },
   submitBtn: {
     backgroundColor: "#7bc67e",
     paddingVertical: 18,
@@ -185,12 +186,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   submitBtnDisabled: { backgroundColor: "#2d3f2d" },
-  submitBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  submitBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
   submitBtnTextDisabled: { color: "#4a5e4a" },
   disclaimer: {
     color: "#6b856b",
     fontSize: 12,
     textAlign: "center",
     lineHeight: 18,
+    fontFamily: "InstrumentSerif_400Regular",
   },
 });

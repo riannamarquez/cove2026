@@ -43,12 +43,14 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#7bc67e",
     letterSpacing: -1,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   disclaimer: {
     color: "#bbb",
     fontSize: 15,
     lineHeight: 24,
     textAlign: "center",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   continueBtn: {
     backgroundColor: "#7bc67e",
@@ -56,5 +58,5 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: "center",
   },
-  continueBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  continueBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
 });

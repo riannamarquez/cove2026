@@ -400,8 +400,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   backBtn: { position: "absolute", left: 24, padding: 8 },
-  backText: { color: "#8fa88f", fontSize: 22 },
-  stepLabel: { color: "#8fa88f", fontSize: 13, fontWeight: "600" },
+  backText: { color: "#8fa88f", fontSize: 22, fontFamily: "InstrumentSerif_400Regular" },
+  stepLabel: { color: "#8fa88f", fontSize: 13, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   progressTrack: {
     height: 3,
     backgroundColor: "#2d3f2d",
@@ -423,8 +423,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 8,
     lineHeight: 36,
+    fontFamily: "InstrumentSerif_400Regular",
   },
-  subtitle: { fontSize: 15, color: "#8fa88f", marginBottom: 36 },
+  subtitle: { fontSize: 15, color: "#8fa88f", marginBottom: 36, fontFamily: "InstrumentSerif_400Regular" },
   input: {
     backgroundColor: "#243324",
     borderRadius: 14,
@@ -447,11 +448,11 @@ const styles = StyleSheet.create({
   optionCardLarge: { padding: 22 },
   optionCardSelected: { borderColor: "#7bc67e", backgroundColor: "#1e3d1e" },
   optionTextGroup: { flex: 1 },
-  optionText: { color: "#8fa88f", fontSize: 16, fontWeight: "600" },
+  optionText: { color: "#8fa88f", fontSize: 16, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   optionTextSelected: { color: "#7bc67e" },
-  optionDesc: { color: "#6b856b", fontSize: 13, marginTop: 2 },
-  optionEmoji: { fontSize: 24, marginRight: 14 },
-  checkmark: { color: "#7bc67e", fontSize: 18, fontWeight: "700" },
+  optionDesc: { color: "#6b856b", fontSize: 13, marginTop: 2, fontFamily: "InstrumentSerif_400Regular" },
+  optionEmoji: { fontSize: 24, marginRight: 14, fontFamily: "InstrumentSerif_400Regular" },
+  checkmark: { color: "#7bc67e", fontSize: 18, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
   bodyGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -469,7 +470,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1e3d1e",
     borderColor: "#7bc67e",
   },
-  bodyChipText: { color: "#8fa88f", fontSize: 15, fontWeight: "600" },
+  bodyChipText: { color: "#8fa88f", fontSize: 15, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   bodyChipTextSelected: { color: "#7bc67e" },
   painNumber: {
     fontSize: 72,
@@ -477,12 +478,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginBottom: 4,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   painDescription: {
     fontSize: 15,
     color: "#8fa88f",
     textAlign: "center",
     marginBottom: 16,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   slider: { width: "100%", height: 40 },
   sliderLabels: {
@@ -490,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 4,
   },
-  sliderLabel: { color: "#8fa88f", fontSize: 12 },
+  sliderLabel: { color: "#8fa88f", fontSize: 12, fontFamily: "InstrumentSerif_400Regular" },
   warningBox: {
     backgroundColor: "#3d1f1f",
     borderRadius: 12,
@@ -499,7 +502,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e05252",
   },
-  warningText: { color: "#e05252", fontSize: 14, lineHeight: 20 },
+  warningText: { color: "#e05252", fontSize: 14, lineHeight: 20, fontFamily: "InstrumentSerif_400Regular" },
   footer: {
     position: "absolute",
     bottom: 0,
@@ -517,6 +520,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   nextBtnDisabled: { backgroundColor: "#2d3f2d" },
-  nextBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  nextBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
   nextBtnTextDisabled: { color: "#4a5e4a" },
 });

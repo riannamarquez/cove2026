@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   backBtn: { alignSelf: "flex-start", marginBottom: 16 },
-  backBtnText: { color: "#7bc67e", fontSize: 14, fontWeight: "600" },
-  title: { fontSize: 28, fontWeight: "800", color: "#fff" },
+  backBtnText: { color: "#7bc67e", fontSize: 14, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
+  title: { fontSize: 28, fontWeight: "800", color: "#fff", fontFamily: "InstrumentSerif_400Regular" },
   center: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 },
-  errorText: { color: "#e05252", fontSize: 15, textAlign: "center" },
+  errorText: { color: "#e05252", fontSize: 15, textAlign: "center", fontFamily: "InstrumentSerif_400Regular" },
   scroll: { paddingHorizontal: 24, paddingBottom: 60, gap: 20 },
   card: {
     backgroundColor: "#243324",
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
-  rowLabel: { color: "#8fa88f", fontSize: 14, fontWeight: "600" },
-  rowValue: { color: "#fff", fontSize: 14, fontWeight: "600", flexShrink: 1, textAlign: "right", marginLeft: 12 },
+  rowLabel: { color: "#8fa88f", fontSize: 14, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
+  rowValue: { color: "#fff", fontSize: 14, fontWeight: "600", flexShrink: 1, textAlign: "right", marginLeft: 12, fontFamily: "InstrumentSerif_400Regular" },
   divider: { height: 1, backgroundColor: "#2d3f2d", marginHorizontal: 20 },
   signOutBtn: {
     backgroundColor: "#243324",
@@ -197,5 +197,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#2d3f2d",
   },
-  signOutBtnText: { color: "#e05252", fontSize: 16, fontWeight: "700" },
+  signOutBtnText: { color: "#e05252", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
 });

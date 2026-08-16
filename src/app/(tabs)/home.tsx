@@ -125,8 +125,9 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#7bc67e",
     letterSpacing: -1,
+    fontFamily: "InstrumentSerif_400Regular",
   },
-  tagline: { fontSize: 15, color: "#8fa88f" },
+  tagline: { fontSize: 15, color: "#8fa88f", fontFamily: "InstrumentSerif_400Regular" },
   streakBadge: {
     backgroundColor: "#243324",
     borderRadius: 20,
@@ -143,9 +144,9 @@ const styles = StyleSheet.create({
     alignItems: "baseline",
     gap: 6,
   },
-  streakEmoji: { fontSize: 15, color: "#f5a623" },
-  streakNum: { color: "#fff", fontSize: 15, fontWeight: "800" },
-  streakSuffix: { color: "#8fa88f", fontSize: 13, fontWeight: "600" },
+  streakEmoji: { fontSize: 15, color: "#f5a623", fontFamily: "InstrumentSerif_400Regular" },
+  streakNum: { color: "#fff", fontSize: 15, fontWeight: "800", fontFamily: "InstrumentSerif_400Regular" },
+  streakSuffix: { color: "#8fa88f", fontSize: 13, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   actions: { gap: 14 },
   actionCard: {
     flexDirection: "row",
@@ -157,6 +158,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
   },
-  actionCardText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-  actionCardArrow: { color: "#7bc67e", fontSize: 18, fontWeight: "700" },
+  actionCardText: { color: "#fff", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
+  actionCardArrow: { color: "#7bc67e", fontSize: 18, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
 });

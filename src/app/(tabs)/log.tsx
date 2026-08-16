@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "800",
     color: "#fff",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   streakCard: {
     flexDirection: "row",
@@ -347,15 +348,16 @@ const styles = StyleSheet.create({
     borderColor: "#2d3f2d",
     marginBottom: 24,
   },
-  streakEmoji: { fontSize: 36, color: "#f5a623" },
+  streakEmoji: { fontSize: 36, color: "#f5a623", fontFamily: "InstrumentSerif_400Regular" },
   streakNum: {
     fontSize: 28,
     fontWeight: "800",
     color: "#fff",
     lineHeight: 32,
+    fontFamily: "InstrumentSerif_400Regular",
   },
-  streakLabel: { color: "#8fa88f", fontSize: 12, fontWeight: "600" },
-  streakMsg: { flex: 1, color: "#8fa88f", fontSize: 13, lineHeight: 18 },
+  streakLabel: { color: "#8fa88f", fontSize: 12, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
+  streakMsg: { flex: 1, color: "#8fa88f", fontSize: 13, lineHeight: 18, fontFamily: "InstrumentSerif_400Regular" },
   sectionLabel: {
     color: "#7bc67e",
     fontSize: 11,
@@ -364,6 +366,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     paddingHorizontal: 24,
     marginBottom: 10,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   logCard: {
     flexDirection: "row",
@@ -377,20 +380,20 @@ const styles = StyleSheet.create({
     borderColor: "#2d3f2d",
   },
   logCardLeft: { flex: 1, gap: 6 },
-  logCardName: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  logCardName: { color: "#fff", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
   lastEntryRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     flexWrap: "wrap",
   },
-  logCardMeta: { color: "#8fa88f", fontSize: 13 },
+  logCardMeta: { color: "#8fa88f", fontSize: 13, fontFamily: "InstrumentSerif_400Regular" },
   painPill: {
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
-  painPillText: { fontSize: 12, fontWeight: "600" },
+  painPillText: { fontSize: 12, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   logCta: {
     backgroundColor: "#1e3d1e",
     borderRadius: 10,
@@ -399,7 +402,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#2d3f2d",
   },
-  logCtaText: { color: "#7bc67e", fontSize: 13, fontWeight: "700" },
+  logCtaText: { color: "#7bc67e", fontSize: 13, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
   historyItem: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -412,9 +415,9 @@ const styles = StyleSheet.create({
     borderColor: "#2d3f2d",
   },
   historyLeft: { flex: 1, gap: 3 },
-  historyName: { color: "#ccc", fontSize: 14, fontWeight: "600" },
-  historyDate: { color: "#6b856b", fontSize: 12 },
-  historyNotes: { color: "#6b856b", fontSize: 12, marginTop: 2 },
+  historyName: { color: "#ccc", fontSize: 14, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
+  historyDate: { color: "#6b856b", fontSize: 12, fontFamily: "InstrumentSerif_400Regular" },
+  historyNotes: { color: "#6b856b", fontSize: 12, marginTop: 2, fontFamily: "InstrumentSerif_400Regular" },
   historyPainBadge: {
     flexDirection: "row",
     alignItems: "baseline",
@@ -423,8 +426,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  historyPainNum: { fontSize: 18, fontWeight: "800" },
-  historyPainLabel: { color: "#6b856b", fontSize: 11 },
+  historyPainNum: { fontSize: 18, fontWeight: "800", fontFamily: "InstrumentSerif_400Regular" },
+  historyPainLabel: { color: "#6b856b", fontSize: 11, fontFamily: "InstrumentSerif_400Regular" },
   aiSessionCard: {
     backgroundColor: "#1a2e1a",
     marginHorizontal: 20,
@@ -440,7 +443,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  aiFeedbackNote: { color: "#8fa88f", fontSize: 13, lineHeight: 18 },
+  aiFeedbackNote: { color: "#8fa88f", fontSize: 13, lineHeight: 18, fontFamily: "InstrumentSerif_400Regular" },
   // Modal
   modalOverlay: {
     flex: 1,
@@ -467,8 +470,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
     color: "#fff",
+    fontFamily: "InstrumentSerif_400Regular",
   },
-  modalDate: { color: "#8fa88f", fontSize: 13 },
+  modalDate: { color: "#8fa88f", fontSize: 13, fontFamily: "InstrumentSerif_400Regular" },
   modalLabel: {
     color: "#8fa88f",
     fontSize: 13,
@@ -476,18 +480,21 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
     marginTop: 4,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   painNumber: {
     fontSize: 56,
     fontWeight: "800",
     textAlign: "center",
     lineHeight: 64,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   painDescription: {
     fontSize: 15,
     color: "#8fa88f",
     textAlign: "center",
     marginTop: -8,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   slider: { width: "100%", height: 40 },
   sliderLabels: {
@@ -495,12 +502,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: -4,
   },
-  sliderLabel: { color: "#8fa88f", fontSize: 12 },
+  sliderLabel: { color: "#8fa88f", fontSize: 12, fontFamily: "InstrumentSerif_400Regular" },
   previousPain: {
     color: "#6b856b",
     fontSize: 13,
     textAlign: "center",
     fontStyle: "italic",
+    fontFamily: "InstrumentSerif_400Regular_Italic",
   },
   notesInput: {
     backgroundColor: "#1a2e1a",
@@ -519,5 +527,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 4,
   },
-  saveBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700" },
+  saveBtnText: { color: "#1a2e1a", fontSize: 16, fontWeight: "700", fontFamily: "InstrumentSerif_400Regular" },
 });

@@ -209,10 +209,12 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#fff",
     marginBottom: 4,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   headerSub: {
     fontSize: 14,
     color: "#8fa88f",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   backHomeBtn: {
     alignSelf: "flex-start",
@@ -222,6 +224,7 @@ const styles = StyleSheet.create({
     color: "#7bc67e",
     fontSize: 14,
     fontWeight: "600",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   scroll: {
     paddingHorizontal: 20,
@@ -232,6 +235,7 @@ const styles = StyleSheet.create({
     color: "#4a5e4a",
     textAlign: "center",
     padding: 16,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   card: {
     borderRadius: 16,
@@ -264,6 +268,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textTransform: "uppercase",
     letterSpacing: 0.5,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   exerciseGif: {
     width: "100%",
@@ -274,11 +279,13 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#fff",
     textAlign: "center",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   flipHint: {
     fontSize: 13,
     color: "#6b856b",
     marginTop: 4,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   gifArea: {
     height: "50%",
@@ -292,15 +299,18 @@ const styles = StyleSheet.create({
   gifIcon: {
     fontSize: 28,
     color: "#2d3f2d",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   gifLabel: {
     color: "#6b856b",
     fontSize: 13,
     fontWeight: "600",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   gifSub: {
     color: "#4a5e4a",
     fontSize: 11,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   repArea: {
     flex: 1,
@@ -321,6 +331,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "800",
     color: "#fff",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   repStatLabel: {
     fontSize: 11,
@@ -328,6 +339,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
     marginTop: 2,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   repDivider: {
     width: 1,
@@ -347,6 +359,7 @@ const styles = StyleSheet.create({
     color: "#7bc67e",
     fontSize: 13,
     fontWeight: "700",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalOverlay: {
     flex: 1,
@@ -373,6 +386,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "800",
     color: "#fff",
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalGif: {
     height: 180,
@@ -384,18 +398,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#2d3f2d",
   },
-  modalGifIcon: { fontSize: 36 },
-  modalGifText: { color: "#6b856b", fontSize: 14 },
+  modalGifIcon: { fontSize: 36, fontFamily: "InstrumentSerif_400Regular" },
+  modalGifText: { color: "#6b856b", fontSize: 14, fontFamily: "InstrumentSerif_400Regular" },
   modalInstructions: {
     color: "#bbb",
     fontSize: 15,
     lineHeight: 24,
+    fontFamily: "InstrumentSerif_400Regular",
   },
   modalRationale: {
     color: "#6b856b",
     fontSize: 13,
     lineHeight: 20,
     fontStyle: "italic",
+    fontFamily: "InstrumentSerif_400Regular_Italic",
   },
   modalCloseBtn: {
     backgroundColor: "#7bc67e",
@@ -407,5 +423,6 @@ const styles = StyleSheet.create({
     color: "#1a2e1a",
     fontSize: 16,
     fontWeight: "700",
+    fontFamily: "InstrumentSerif_400Regular",
   },
 });

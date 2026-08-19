@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
   View,
 } from "react-native";
 
+import Logo from "../../assets/images/cove_logo_transparent.png";
 import { supabase } from "../../.lib/supabase";
 
 async function signIn(email: string, password: string) {
@@ -56,6 +58,7 @@ export default function LoginScreen() {
     >
       <View style={styles.inner}>
         <View style={styles.top}>
+          <Image source={Logo} style={styles.logoImage} resizeMode="contain" />
           <Text style={styles.logo}>cove.</Text>
           <Text style={styles.tagline}>injury recovery, guided by AI</Text>
         </View>
@@ -133,10 +136,16 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     paddingHorizontal: 24,
-    justifyContent: "center",
-    gap: 32,
+    paddingTop: 72,
+    justifyContent: "flex-start",
+    gap: 40,
   },
-  top: { alignItems: "center", gap: 6 },
+  top: { alignItems: "center", gap: 12, marginBottom: 8 },
+  logoImage: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+  },
   logo: {
     fontSize: 48,
     fontWeight: "800",

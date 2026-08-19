@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 52,
     paddingBottom: 120,
   },
   stepContainer: { flex: 1 },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 24,
+    padding: 16,
     backgroundColor: "#1a2e1a",
     borderTopWidth: 1,
     borderTopColor: "#2d3f2d",

@@ -60,7 +60,7 @@ export default function LoginScreen() {
         <View style={styles.top}>
           <Image source={Logo} style={styles.logoImage} resizeMode="contain" />
           <Text style={styles.logo}>cove.</Text>
-          <Text style={styles.tagline}>injury recovery, guided by AI</Text>
+          <Text style={styles.tagline}>personalized physical therapy</Text>
         </View>
 
         <View style={styles.toggleRow}>
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   inner: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 72,
+    paddingTop: 96,
     justifyContent: "flex-start",
     gap: 40,
   },
@@ -203,5 +203,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 18,
     fontFamily: "InstrumentSerif_400Regular",
+    marginBottom: 0,
   },
 });

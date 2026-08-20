@@ -40,10 +40,21 @@ export default function LoginScreen() {
     try {
       if (mode === "signin") {
         await signIn(email.trim(), password);
+
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data: profile } = user
+          ? await supabase.from('users').select('name, age').eq('id', user.id).single()
+          : { data: null };
+
+        if (profile?.name && profile?.age) {
+          router.replace('/(tabs)/home');
+        } else {
+          router.replace('/disclaimer');
+        }
       } else {
         await signUp(email.trim(), password);
+        router.replace("/disclaimer");
       }
-      router.replace("/disclaimer");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {

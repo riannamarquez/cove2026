@@ -182,6 +182,8 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
     return true;
   };
 
+  if (!profileLoaded) return null;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -316,14 +318,14 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
                   key={area.id}
                   style={[
                     styles.bodyChip,
-                    form.bodyArea === area.id && styles.bodyChipSelected,
+                    form.bodyArea === area.label && styles.bodyChipSelected,
                   ]}
-                  onPress={() => setForm({ ...form, bodyArea: area.id })}
+                  onPress={() => setForm({ ...form, bodyArea: area.label })}
                 >
                   <Text
                     style={[
                       styles.bodyChipText,
-                      form.bodyArea === area.id && styles.bodyChipTextSelected,
+                      form.bodyArea === area.label && styles.bodyChipTextSelected,
                     ]}
                   >
                     {area.label}

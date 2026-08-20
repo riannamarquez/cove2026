@@ -331,6 +331,12 @@ router.push({ pathname: '/(tabs)/plan', params: { plan: JSON.stringify(plan) } }
                 </TouchableOpacity>
               ))}
             </View>
+            <Text style={styles.multiAreaNote}>
+              If there are multiple body parts that need physical therapy,
+              please generate <Text style={styles.multiAreaNoteEmphasis}>separate plans</Text> for
+              each. You can view all your past plans from the home screen.
+              Enjoy!
+            </Text>
           </View>
         )}
 
@@ -472,6 +478,14 @@ const styles = StyleSheet.create({
   },
   bodyChipText: { color: "#8fa88f", fontSize: 15, fontWeight: "600", fontFamily: "InstrumentSerif_400Regular" },
   bodyChipTextSelected: { color: "#7bc67e" },
+  multiAreaNote: {
+    fontSize: 13,
+    color: "#8fa88f",
+    marginTop: 20,
+    lineHeight: 20,
+    fontFamily: "InstrumentSerif_400Regular",
+  },
+  multiAreaNoteEmphasis: { color: "#7bc67e" },
   painNumber: {
     fontSize: 72,
     fontWeight: "800",

@@ -60,7 +60,7 @@ export default function ProfileScreen() {
               .single(),
             supabase
               .from("plans")
-              .select("exercises, pain_level")
+              .select("body_area, pain_level")
               .eq("user_id", user.id)
               .order("created_at", { ascending: false })
               .limit(1)
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
               name: userRes.data?.name ?? "",
               age: userRes.data?.age ?? null,
               fitness_level: userRes.data?.fitness_level ?? "",
-              recent_body_area: planRes.data?.exercises ?? null,
+              recent_body_area: planRes.data?.body_area ?? null,
               recent_pain_level: planRes.data?.pain_level ?? null,
             });
           }

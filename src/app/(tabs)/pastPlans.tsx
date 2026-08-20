@@ -14,6 +14,7 @@ import { supabase } from "../../../.lib/supabase";
 type PlanRow = {
   id: string;
   exercises: string;
+  body_area: string;
   pain_level: number;
   created_at: string;
   plan_data: object;
@@ -45,7 +46,7 @@ export default function PastPlansScreen() {
           }
           const { data, error: dbError } = await supabase
             .from("plans")
-            .select("id, exercises, pain_level, created_at, plan_data")
+            .select("id, exercises, body_area, pain_level, created_at, plan_data")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false });
 
@@ -97,7 +98,7 @@ export default function PastPlansScreen() {
           {plans.map((row) => (
             <TouchableOpacity key={row.id} style={styles.card} onPress={() => openPlan(row)}>
               <View style={styles.cardTop}>
-                <Text style={styles.bodyArea}>{row.exercises}</Text>
+                <Text style={styles.bodyArea}>{row.body_area}</Text>
                 <Text style={styles.date}>{formatDate(row.created_at)}</Text>
               </View>
               <View style={styles.painRow}>

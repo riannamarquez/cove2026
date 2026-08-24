@@ -4,11 +4,13 @@
     "slug": "cove",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/cove_logo_transparent.png",
     "scheme": "cove",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.clairelu.cove",
+      "buildNumber": "1",
+      "icon": "./assets/images/cove_logo_transparent.png",
       "infoPlist": {
         "NSCameraUsageDescription": "Cove needs camera access to evaluate your exercise form.",
         "NSPhotoLibraryUsageDescription": "Cove needs photo library access to save and review your form photos."
@@ -16,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#1a2e1a",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -26,7 +28,6 @@
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
     },
@@ -39,7 +40,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#1a2e1a",
           "android": {
             "image": "./assets/images/splash-icon.png",
             "imageWidth": 76

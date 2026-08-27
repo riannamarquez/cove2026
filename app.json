@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.clairelu.cove",
-      "buildNumber": "1",
+      "buildNumber": "5",
       "icon": "./assets/images/cove_logo_transparent.png",
       "infoPlist": {
         "NSCameraUsageDescription": "Cove needs camera access to evaluate your exercise form.",

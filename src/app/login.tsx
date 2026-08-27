@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -65,79 +66,84 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.inner}>
-        <View style={styles.top}>
-          <Image source={Logo} style={styles.logoImage} resizeMode="contain" />
-          <Text style={styles.logo}>cove.</Text>
-          <Text style={styles.tagline}>personalized physical therapy</Text>
-        </View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.inner}>
+          <View style={styles.top}>
+            <Image source={Logo} style={styles.logoImage} resizeMode="contain" />
+            <Text style={styles.logo}>cove.</Text>
+            <Text style={styles.tagline}>personalized physical therapy</Text>
+          </View>
 
-        <View style={styles.toggleRow}>
-          <TouchableOpacity
-            style={[styles.toggleBtn, mode === "signin" && styles.toggleBtnActive]}
-            onPress={() => { setMode("signin"); setError(""); }}
-          >
-            <Text style={[styles.toggleText, mode === "signin" && styles.toggleTextActive]}>
-              Sign In
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleBtn, mode === "signup" && styles.toggleBtnActive]}
-            onPress={() => { setMode("signup"); setError(""); }}
-          >
-            <Text style={[styles.toggleText, mode === "signup" && styles.toggleTextActive]}>
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#4a5e4a"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#4a5e4a"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-
-          {error !== "" && (
-            <View style={styles.errorBox}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
-
-          <TouchableOpacity
-            style={[styles.submitBtn, (!isValid || loading) && styles.submitBtnDisabled]}
-            onPress={handleSubmit}
-            disabled={!isValid || loading}
-          >
-            <Text
-              style={[
-                styles.submitBtnText,
-                (!isValid || loading) && styles.submitBtnTextDisabled,
-              ]}
+          <View style={styles.toggleRow}>
+            <TouchableOpacity
+              style={[styles.toggleBtn, mode === "signin" && styles.toggleBtnActive]}
+              onPress={() => { setMode("signin"); setError(""); }}
             >
-              {loading ? "Please wait…" : mode === "signin" ? "Sign In →" : "Create Account →"}
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text style={[styles.toggleText, mode === "signin" && styles.toggleTextActive]}>
+                Sign In
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleBtn, mode === "signup" && styles.toggleBtnActive]}
+              onPress={() => { setMode("signup"); setError(""); }}
+            >
+              <Text style={[styles.toggleText, mode === "signup" && styles.toggleTextActive]}>
+                Sign Up
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <Text style={styles.disclaimer}>
-          By continuing you agree to our Terms of Service and Privacy Policy.
-        </Text>
-      </View>
+          <View style={styles.form}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#4a5e4a"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#4a5e4a"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+
+            {error !== "" && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            )}
+
+            <TouchableOpacity
+              style={[styles.submitBtn, (!isValid || loading) && styles.submitBtnDisabled]}
+              onPress={handleSubmit}
+              disabled={!isValid || loading}
+            >
+              <Text
+                style={[
+                  styles.submitBtnText,
+                  (!isValid || loading) && styles.submitBtnTextDisabled,
+                ]}
+              >
+                {loading ? "Please wait…" : mode === "signin" ? "Sign In →" : "Create Account →"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.disclaimer}>
+            By continuing you agree to our Terms of Service and Privacy Policy.
+          </Text>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
